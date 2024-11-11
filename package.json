@@ -1,9 +1,12 @@
 {
   "name": "eatnow",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node build/src/app.ts",
+    "dev": "nodemon src/app.ts",
+    "dev:ts": "npx tsc --watch",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "hosseinfalah",
@@ -14,15 +17,28 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "jsonwebtoken": "^9.0.2"
+    "http-errors": "^2.0.0",
+    "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.5",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.0",
+    "@types/http-errors": "^2.0.4",
+    "@types/http-status-codes": "^1.2.0",
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/morgan": "^1.9.9",
     "@types/node": "^22.9.0",
+    "@types/sequelize": "^4.28.20",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.7",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
