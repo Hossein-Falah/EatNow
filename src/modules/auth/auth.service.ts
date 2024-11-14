@@ -37,8 +37,17 @@ export class AuthService {
         return { user: newUser, accessToken };
     };
 
-    login() {
+    async login({ phone }: { phone: number} ): Promise<void> {
+        const user = await this.checkExistUser(undefined, phone);
+
+        if (!user) throw createHttpError.NotFound("کاربری با همچین شماره ای ثبت نشده نام نشده است");
+
+        const code: number = Math.floor(Math.random() * 99999);
+        const otpExpiry = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
+
+        const updatedUser = await user.update({ otp: code, otpExpiry });
         
+        if (!updatedUser) throw createHttpError.InternalServerError("خطایی در اسال کد OTP رخ داده لطفا دوباره تلاش کنید");
     }
 
     verifyOTP() {
@@ -69,8 +78,12 @@ export class AuthService {
 
     }
 
-    async checkExistUser(email:string, phone:number) {
-        const user = await this.model.findOne({ where: { email, phone } });
+    async checkExistUser(email?:string, phone?:number) {
+        const query = {};
+        if (email) (query as {email:string}).email = email;
+        if (phone) (query as {phone:number}).phone = phone;
+
+        const user = await this.model.findOne({ where: query });
         return user;
     }
 }

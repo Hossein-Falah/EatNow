@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 
 import { authService, AuthService } from "./auth.service";
 import { authType } from "../../types";
-import { registerValidation } from "./auth.validation";
+import { phoneValidation, registerValidation } from "./auth.validation";
 
 class AuthController {
     private service: AuthService;
@@ -12,6 +12,7 @@ class AuthController {
         this.service = authService;
 
         this.register = this.register.bind(this);
+        this.login = this.login.bind(this);
     }
 
     async register(req: Request<{}, {}, authType>, res: Response, next: NextFunction) {
@@ -33,9 +34,18 @@ class AuthController {
         }        
     };
 
-    login(req: Request, res: Response, next: NextFunction) {
+    async login(req: Request<{}, {}, { phone: number }>, res: Response, next: NextFunction) {
         try {
-            
+            const { phone } = req.body;
+
+            await phoneValidation.validateAsync({ phone });
+
+            await this.service.login({ phone });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "کد با موفقعیت ارسال شد",
+            })
         } catch (error) {
             next(error);
         }

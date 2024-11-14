@@ -12,6 +12,13 @@ const registerValidation = Joi.object({
     
 });
 
+const phoneValidation = Joi.object({
+    phone: Joi.alternatives().try(
+        Joi.number().integer().min(1000000000).max(99999999999)
+    ).required().error(createHttpError.BadRequest("شماره موبایل بدون وارد کن 0 و باید بین 10 تا 11 رقم باشد"))
+})
+
 export {
-    registerValidation
+    registerValidation,
+    phoneValidation
 }

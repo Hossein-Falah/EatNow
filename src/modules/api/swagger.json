@@ -54,6 +54,35 @@
                     }
                 }
             }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": ["Authentication"],
+                "summary": "login user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "phone": 9162000000
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "login user successFully"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
         }
     }
 }
