@@ -18,7 +18,7 @@ export class User extends Model<IUser> implements IUser {
         food: string;
         quantity: number
     }[];
-    declare orders: string[];
+    // declare orders: string[];
 };
 
 User.init({
@@ -54,22 +54,22 @@ User.init({
         }
     },
     phone: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: false,
         unique: true,
         validate: {
             notEmpty: { msg: "شماره همراه اجباری می باشد" },
             isNumeric: { msg: "شماره همراه نامعتبر است" },
-            len: [11, 11]
+            len: [10, 11]
         }
     },
     otp: {
         type: DataTypes.INTEGER,
-        allowNull: false  
+        allowNull: true  
     },
     otpExpiry: {
         type: DataTypes.DATE,
-        allowNull: false  
+        allowNull: true  
     },
     address: {
         type: DataTypes.STRING,
@@ -77,32 +77,33 @@ User.init({
     },
     latitude: {
         type: DataTypes.FLOAT,
-        allowNull: false  
+        allowNull: true  
     },
     longitude: {
         type: DataTypes.FLOAT,
-        allowNull: false
+        allowNull: true
     },
     role: {
         type: DataTypes.ENUM("ADMIN", "USER"),
-        allowNull: false
+        allowNull: false,
+        defaultValue: "USER"
     },
     cart: {
         type: DataTypes.JSON,
         allowNull: true,
         defaultValue: []
     },
-    orders: {
-        type: DataTypes.ARRAY(DataTypes.UUID),
-        allowNull: true,
-        references: {
-            model: "order",
-            key: "id"
-        },
-        defaultValue: []
-    }
+    // orders: {
+    //     type: DataTypes.ARRAY(DataTypes.UUID),
+    //     allowNull: true,
+    //     references: {
+    //         model: "orders",
+    //         key: "id"
+    //     },
+    //     defaultValue: []
+    // }
 }, {
     sequelize: sequelize,
-    modelName: "user",
+    tableName: "users",
     timestamps: true
 });

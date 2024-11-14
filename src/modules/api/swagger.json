@@ -14,5 +14,8 @@
                 "description": "User Token For Authorization: Bearer [user_token] "
             }
         }
-    }
+    },
+    "tags": [
+        { "name": "Authentication", "description": "api authentication user" }
+    ]
 }

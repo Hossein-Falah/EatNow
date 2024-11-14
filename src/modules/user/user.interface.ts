@@ -4,8 +4,8 @@ export interface IUser {
     lastname: string;
     email: string;
     phone: number;
-    otp: number;
-    otpExpiry: Date;
+    otp: number | null;
+    otpExpiry: Date | null;
     address: string;
     latitude: number;
     longitude: number;
@@ -14,5 +14,5 @@ export interface IUser {
         food: string;
         quantity: number;
     }[];
-    orders: string[];
+    // orders: string[];
 }
