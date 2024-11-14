@@ -17,5 +17,43 @@
     },
     "tags": [
         { "name": "Authentication", "description": "api authentication user" }
-    ]
+    ],
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": ["Authentication"],
+                "summary": "register user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "firstname": "hossein",
+                                    "lastname": "falah",
+                                    "email": "a@b.com",
+                                    "phone": 9162000000,
+                                    "address": "tehran"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "register user successFully"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "409": {
+                        "description": "user already exist"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        }
+    }
 }
