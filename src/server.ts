@@ -2,6 +2,7 @@ import http from "http";
 
 import createHttpError from "http-errors";
 import express, { NextFunction, Request, Response } from "express";
+import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -32,6 +33,7 @@ export class Application {
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(cookieParser());
         this.app.use(express.static('public'));
     };
 

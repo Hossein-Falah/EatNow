@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import { authType } from "../../types";
+import { authType, verifyOTPType } from "../../types";
 import { User } from "../user/user.model";
 import { signAccessToken } from "../../utils/token.utils";
 
@@ -42,16 +42,32 @@ export class AuthService {
 
         if (!user) throw createHttpError.NotFound("کاربری با همچین شماره ای ثبت نشده نام نشده است");
 
+        const now = new Date().getTime();
         const code: number = Math.floor(Math.random() * 99999);
         const otpExpiry = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
+
+        if (+user.otpExpiry > now) throw createHttpError.Forbidden("کد OTP هنوز منقضی نشده است");
 
         const updatedUser = await user.update({ otp: code, otpExpiry });
         
         if (!updatedUser) throw createHttpError.InternalServerError("خطایی در اسال کد OTP رخ داده لطفا دوباره تلاش کنید");
     }
 
-    verifyOTP() {
-        
+    async verifyOTP({ phone, otp }: verifyOTPType): Promise<{ accessToken: string, refreshToken: string }> {
+        const user = await this.checkExistUser(undefined, phone);
+
+        if (!user) throw createHttpError.NotFound("کاربری با همچین شماره ای ثبت نشده نام نشده است");
+
+        const date = new Date();        
+        const now = date.getTime()
+
+        if (user.otpExpiry.getTime() < now) throw createHttpError.Unauthorized("کد OTP منقضی شده است");        
+        if (user.otp !== +otp) throw createHttpError.Unauthorized("کد OTP صحیح نیست");
+
+        const accessToken = signAccessToken(phone);
+        const refreshToken = signAccessToken(phone);
+            
+        return { accessToken, refreshToken };
     }
 
     refreshToken() {

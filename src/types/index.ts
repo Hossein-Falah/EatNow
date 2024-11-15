@@ -5,3 +5,8 @@ export type authType = {
     phone: number
     address: string;
 }
+
+export type verifyOTPType = {
+    phone: number;
+    otp: number;
+}

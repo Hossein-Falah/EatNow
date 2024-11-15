@@ -75,8 +75,47 @@
                     "200": {
                         "description": "login user successFully"
                     },
+                    "403": {
+                        "description": "not expired otp code"
+                    },
                     "404": {
                         "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/auth/verify-otp": {
+            "post": {
+                "tags": ["Authentication"],
+                "summary": "verify otp",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "phone": 9162000000,
+                                    "otp": 12345
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "verify otp successFully"
+                    },
+                    "400": {
+                        "description": "invalid request"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "401": {
+                        "description": "otp invalid code or expired"
                     },
                     "500": {
                         "description": "internal server error"

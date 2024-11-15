@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 
 import { authService, AuthService } from "./auth.service";
 import { authType } from "../../types";
-import { phoneValidation, registerValidation } from "./auth.validation";
+import { phoneValidation, registerValidation, verifyOTPValidation } from "./auth.validation";
 
 class AuthController {
     private service: AuthService;
@@ -13,6 +13,7 @@ class AuthController {
 
         this.register = this.register.bind(this);
         this.login = this.login.bind(this);
+        this.verifyOTP = this.verifyOTP.bind(this);
     }
 
     async register(req: Request<{}, {}, authType>, res: Response, next: NextFunction) {
@@ -51,9 +52,31 @@ class AuthController {
         }
     }
 
-    verifyOTP(req: Request, res: Response, next: NextFunction) {
+    async verifyOTP(req: Request<{}, {}, { phone:number; otp: number; }>, res: Response, next: NextFunction) {
         try {
-            
+            const { phone, otp } = req.body;
+
+            await verifyOTPValidation.validateAsync(req.body);
+        
+            const { accessToken, refreshToken } = await this.service.verifyOTP({ phone, otp });
+
+            if (accessToken && refreshToken) {                
+                res.cookie('access-token', accessToken, {
+                    maxAge: 15 * 60 * 1000, // 15 minutes
+                    httpOnly: true
+                })
+    
+                res.cookie('refresh-token', refreshToken, {
+                    maxAge: 60 * 60 * 1000, // 1 hour
+                    httpOnly: true
+                })
+            };
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "کد با موفقعیت تایید شد",
+                accessToken
+            })
         } catch (error) {
             next(error);
         }
