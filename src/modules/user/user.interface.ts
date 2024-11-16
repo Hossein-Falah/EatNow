@@ -16,3 +16,7 @@ export interface IUser {
     }[];
     // orders: string[];
 }
+
+export interface CustomRequest extends Request {
+    user?: IUser;
+}

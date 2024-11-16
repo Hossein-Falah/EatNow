@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import { authService, AuthService } from "./auth.service";
 import { authType } from "../../types";
 import { phoneValidation, registerValidation, verifyOTPValidation } from "./auth.validation";
+import { CustomRequest } from "../user/user.interface";
 
 class AuthController {
     private service: AuthService;
@@ -122,10 +123,16 @@ class AuthController {
         }
     }
 
-    getMe(req: Request, res: Response, next: NextFunction) {
+    getMe(req: CustomRequest, res: Response, next: NextFunction) {
         try {
-            
-        } catch (error) {
+            const user = req.user;
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "get user successFully",
+                user
+            })
+        } catch (error) {            
             next(error);
         }
     }

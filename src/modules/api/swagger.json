@@ -122,6 +122,26 @@
                     }
                 }
             }
+        },
+        "/auth/getMe": {
+            "get": {
+                "tags": ["Authentication"],
+                "summary": "get user",
+                "responses": {
+                    "200": {
+                        "description": "get user successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
         }
     }
 }

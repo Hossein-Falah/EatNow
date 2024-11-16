@@ -10,7 +10,6 @@ export class AuthService {
         this.model = User
     }
 
-    
     async register({ firstname, lastname, email, phone, address }: authType): Promise<{ user: User, accessToken: string }>{
         const isExistUser = await this.checkExistUser(email, phone);
 
@@ -43,7 +42,7 @@ export class AuthService {
         if (!user) throw createHttpError.NotFound("کاربری با همچین شماره ای ثبت نشده نام نشده است");
 
         const now = new Date().getTime();
-        const code: number = Math.floor(Math.random() * 99999);
+        const code: number = Math.floor(10000 + Math.random() * 99999);
         const otpExpiry = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
 
         if (+user.otpExpiry > now) throw createHttpError.Forbidden("کد OTP هنوز منقضی نشده است");
@@ -88,10 +87,6 @@ export class AuthService {
 
     logout() {
         
-    }
-
-    getMe() {
-
     }
 
     async checkExistUser(email?:string, phone?:number) {
