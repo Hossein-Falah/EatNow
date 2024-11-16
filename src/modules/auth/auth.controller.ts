@@ -15,6 +15,7 @@ class AuthController {
         this.register = this.register.bind(this);
         this.login = this.login.bind(this);
         this.verifyOTP = this.verifyOTP.bind(this);
+        this.refreshToken = this.refreshToken.bind(this);
     }
 
     async register(req: Request<{}, {}, authType>, res: Response, next: NextFunction) {
@@ -76,16 +77,26 @@ class AuthController {
             res.status(StatusCodes.OK).json({
                 statusCode: StatusCodes.OK,
                 message: "کد با موفقعیت تایید شد",
-                accessToken
+                accessToken,
+                refreshToken
             })
         } catch (error) {
             next(error);
         }
     }
 
-    refreshToken(req: Request, res: Response, next: NextFunction) {
+    async refreshToken(req: Request<{}, {}, { refresh_token: string }>, res: Response, next: NextFunction) {
         try {
-            
+            const { refresh_token } = req.body;
+
+            const { accessToken, newRefreshToken } = await this.service.refreshToken({ refresh_token });
+
+            res.status(StatusCodes.CREATED).json({
+                statusCode: StatusCodes.CREATED,
+                message: "توکن جدید با موفقعیت ارسال شد",
+                accessToken,
+                refreshToken: newRefreshToken
+            });  
         } catch (error) {
             next(error);
         }

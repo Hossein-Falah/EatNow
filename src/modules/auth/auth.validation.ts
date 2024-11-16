@@ -23,8 +23,8 @@ const verifyOTPValidation = Joi.object({
         Joi.number().integer().min(1000000000).max(99999999999)
     ).required().error(createHttpError.BadRequest("شماره موبایل بدون وارد کن 0 و باید بین 10 تا 11 رقم باشد")),
     otp: Joi.alternatives().try(
-        Joi.number().integer().min(10000).max(99999)
-    ).required().error(createHttpError.BadRequest("کد وارد شده صحیح نیست کد باید 5 رقم باشد"))
+        Joi.number().integer()
+    ).required().error(createHttpError.BadRequest("کد وارد شده صحیح نیست"))
 })
 
 export {

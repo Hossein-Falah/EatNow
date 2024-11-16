@@ -1,7 +1,7 @@
 import createHttpError from "http-errors";
 import { authType, verifyOTPType } from "../../types";
 import { User } from "../user/user.model";
-import { signAccessToken } from "../../utils/token.utils";
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../../utils/token.utils";
 
 export class AuthService {
     private model: typeof User;
@@ -64,13 +64,22 @@ export class AuthService {
         if (user.otp !== +otp) throw createHttpError.Unauthorized("کد OTP صحیح نیست");
 
         const accessToken = signAccessToken(phone);
-        const refreshToken = signAccessToken(phone);
+        const refreshToken = signRefreshToken(phone);
             
         return { accessToken, refreshToken };
     }
 
-    refreshToken() {
-        
+    async refreshToken({ refresh_token }: { refresh_token: string }): Promise<{ accessToken: string, newRefreshToken: string }> {
+        const phone = await verifyRefreshToken(refresh_token);
+
+        const user = await this.model.findOne({ where: { phone }});
+
+        if (!user) throw createHttpError.NotFound("کاربر پیدا نشد")
+
+        const accessToken = signAccessToken(user.phone);
+        const newRefreshToken = signRefreshToken(user.phone);
+
+        return { accessToken, newRefreshToken }
     }
 
     forgotPassword() {
