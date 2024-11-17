@@ -16,7 +16,8 @@
         }
     },
     "tags": [
-        { "name": "Authentication", "description": "api authentication user" }
+        { "name": "Authentication", "description": "api authentication user" },
+        { "name": "Users", "description": "api mangement user" }
     ],
     "paths": {
         "/auth/register": {
@@ -214,6 +215,26 @@
                 "responses": {
                     "200": {
                         "description": "get user successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "get all users",
+                "responses": {
+                    "200": {
+                        "description": "get all users successFully"
                     },
                     "401": {
                         "description": "unauthorized"
