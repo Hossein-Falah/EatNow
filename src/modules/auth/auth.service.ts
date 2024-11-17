@@ -1,3 +1,4 @@
+import { Response } from "express";
 import createHttpError from "http-errors";
 import { authType, verifyOTPType } from "../../types";
 import { User } from "../user/user.model";
@@ -94,8 +95,9 @@ export class AuthService {
         
     }
 
-    logout() {
-        
+    async logout(res: Response): Promise<void> {
+        res.clearCookie("access-token", { httpOnly: true });
+        res.clearCookie("refresh-token", { httpOnly: true });
     }
 
     async checkExistUser(email?:string, phone?:number) {

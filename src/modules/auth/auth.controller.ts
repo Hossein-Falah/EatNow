@@ -16,6 +16,7 @@ class AuthController {
         this.login = this.login.bind(this);
         this.verifyOTP = this.verifyOTP.bind(this);
         this.refreshToken = this.refreshToken.bind(this);
+        this.logout = this.logout.bind(this);
     }
 
     async register(req: Request<{}, {}, authType>, res: Response, next: NextFunction) {
@@ -126,9 +127,14 @@ class AuthController {
         }
     }
 
-    logout(req: Request, res: Response, next: NextFunction) {
+    async logout(req: Request, res: Response, next: NextFunction) {
         try {
-            
+            await this.service.logout(res);
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "logout successFully"
+            })
         } catch (error) {
             next(error);
         }
