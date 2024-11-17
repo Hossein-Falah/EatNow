@@ -83,16 +83,21 @@ export class AuthService {
         return { accessToken, newRefreshToken }
     }
 
-    forgotPassword() {
-        
-    }
+    async resendOTP({ phone }: { phone: number }): Promise<void> {
+        const user = await this.checkExistUser(undefined, phone);
 
-    resetPassword() {
-        
-    }
+        if (!user) throw createHttpError.NotFound("کاربری با همچین شماره ای ثبت نشده نام نشده است");
 
-    changePassword() {
+        const now = new Date().getTime();
+
+        const code: number = Math.floor(10000 + Math.random() * 99999);
+        const otpExpiry = new Date(Date.now() + 2 * 60 * 1000); // 2 minutes from now
+
+        if (user.otpExpiry.getTime() > now) throw createHttpError.Forbidden("کد OTP هنوز منقضی نشده است");
+
+        const updatedUser = await user.update({ otp: code, otpExpiry });
         
+        if (!updatedUser) throw createHttpError.InternalServerError("خطایی در اسال کد OTP رخ داده لطفا دوباره تلاش کنید");
     }
 
     async logout(res: Response): Promise<void> {

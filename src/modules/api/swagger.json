@@ -123,6 +123,38 @@
                 }
             }
         },
+        "/auth/resend-otp": {
+            "post": {
+                "tags": ["Authentication"],
+                "summary": "resend otp",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "phone": 9162000000
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "resend otp successFully"
+                    },
+                    "403": {
+                        "description": "not expired otp code"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
         "/auth/refresh-token": {
             "post": {
                 "tags": ["Authentication"],
@@ -142,6 +174,26 @@
                 "responses": {
                     "201": {
                         "description": "create refresh token successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": ["Authentication"],
+                "summary": "logout user",
+                "responses": {
+                    "200": {
+                        "description": "logout user successFully"
                     },
                     "401": {
                         "description": "unauthorized"

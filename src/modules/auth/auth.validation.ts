@@ -30,5 +30,5 @@ const verifyOTPValidation = Joi.object({
 export {
     registerValidation,
     phoneValidation,
-    verifyOTPValidation
+    verifyOTPValidation,
 }

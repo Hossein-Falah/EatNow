@@ -16,6 +16,7 @@ class AuthController {
         this.login = this.login.bind(this);
         this.verifyOTP = this.verifyOTP.bind(this);
         this.refreshToken = this.refreshToken.bind(this);
+        this.resendOTP = this.resendOTP.bind(this);
         this.logout = this.logout.bind(this);
     }
 
@@ -86,6 +87,23 @@ class AuthController {
         }
     }
 
+    async resendOTP(req: Request<{}, {}, { phone: number }>, res: Response, next: NextFunction) {
+        try {
+            const { phone } = req.body;
+
+            await phoneValidation.validateAsync({ phone });
+
+            await this.service.resendOTP({ phone });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "کد با موفقعیت ارسال شد"
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async refreshToken(req: Request<{}, {}, { refresh_token: string }>, res: Response, next: NextFunction) {
         try {
             const { refresh_token } = req.body;
@@ -98,30 +116,6 @@ class AuthController {
                 accessToken,
                 refreshToken: newRefreshToken
             });  
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    forgotPassword(req: Request, res: Response, next: NextFunction) {
-        try {
-            
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    resetPassword(req: Request, res: Response, next: NextFunction) {
-        try {
-            
-        } catch (error) {
-            next(error);
-        }
-    }
-
-    changePassword(req: Request, res: Response, next: NextFunction) {
-        try {
-            
         } catch (error) {
             next(error);
         }
