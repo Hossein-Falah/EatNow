@@ -7,22 +7,29 @@
     "components": {
         "securitySchemes": {
             "Authorization": {
-                "type": "apikey",
-                "name": "Authorization",
+                "type": "http",
                 "scheme": "bearer",
-                "in": "header",
+                "bearerFormat": "JWT",
                 "description": "User Token For Authorization: Bearer [user_token] "
             }
         }
     },
     "tags": [
-        { "name": "Authentication", "description": "api authentication user" },
-        { "name": "Users", "description": "api mangement user" }
+        {
+            "name": "Authentication",
+            "description": "api authentication user"
+        },
+        {
+            "name": "Users",
+            "description": "api mangement user"
+        }
     ],
     "paths": {
         "/auth/register": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "register user",
                 "requestBody": {
                     "content": {
@@ -58,7 +65,9 @@
         },
         "/auth/login": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "login user",
                 "requestBody": {
                     "content": {
@@ -90,7 +99,9 @@
         },
         "/auth/verify-otp": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "verify otp",
                 "requestBody": {
                     "content": {
@@ -126,7 +137,9 @@
         },
         "/auth/resend-otp": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "resend otp",
                 "requestBody": {
                     "content": {
@@ -158,7 +171,9 @@
         },
         "/auth/refresh-token": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "refresh token",
                 "requestBody": {
                     "content": {
@@ -190,7 +205,9 @@
         },
         "/auth/logout": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "logout user",
                 "responses": {
                     "200": {
@@ -210,7 +227,9 @@
         },
         "/auth/getMe": {
             "get": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "get user",
                 "responses": {
                     "200": {
@@ -230,8 +249,15 @@
         },
         "/users": {
             "get": {
-                "tags": ["Users"],
+                "tags": [
+                    "Users"
+                ],
                 "summary": "get all users",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "get all users successFully"
