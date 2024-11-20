@@ -9,6 +9,7 @@ class UserController {
         this.service = userService;
         
         this.getAllUsers = this.getAllUsers.bind(this);
+        this.getUserById = this.getUserById.bind(this);
     };
 
     async getAllUsers(req: Request, res:Response, next:NextFunction) {
@@ -25,9 +26,17 @@ class UserController {
         }
     }
 
-    async getUserById(req: Request, res:Response, next:NextFunction) {
+    async getUserById(req: Request<{ id: string }, {}, {}>, res:Response, next:NextFunction) {
         try {
-            
+            const { id } = req.params;
+
+            const user = await this.service.getUserById({ id });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "get user successFully",
+                user
+            })
         } catch (error) {
             next(error);
         }

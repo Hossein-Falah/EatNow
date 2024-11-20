@@ -1,10 +1,10 @@
 import createHttpError from "http-errors";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { StatusCodes } from "http-status-codes";
 import { NextFunction, Request, Response } from "express";
 
 import { IUser } from "../../modules/user/user.interface";
 import { User } from "../../modules/user/user.model";
-import { StatusCodes } from "http-status-codes";
 
 interface CustomRequest extends Request {
     user: IUser;

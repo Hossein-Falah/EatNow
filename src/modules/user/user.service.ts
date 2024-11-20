@@ -11,8 +11,9 @@ export class UserService {
         const users = await this.model.findAll();
         return users;
     }
-    async getUserById() {
-        
+    async getUserById({ id }: { id: string }) {
+        const user  = await User.findOne({ where: { id }});
+        return user;
     }
     async updateUserById() {
         
