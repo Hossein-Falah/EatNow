@@ -25,11 +25,8 @@ const getToken = (headers: headersType) => {
 export const authenticateUser = async (req:CustomRequest, res:Response, next:NextFunction) => {
     try {
         const token = getToken(req.headers);
-        console.log(token);
-        
 
         const payload = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as JwtPayload;
-        console.log(payload);
         
         const { user } = payload || {};        
 

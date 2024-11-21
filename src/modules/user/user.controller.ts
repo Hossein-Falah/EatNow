@@ -11,6 +11,7 @@ class UserController {
         this.getAllUsers = this.getAllUsers.bind(this);
         this.getUserById = this.getUserById.bind(this);
         this.removeUserById = this.removeUserById.bind(this);
+        this.changeRoleUser = this.changeRoleUser.bind(this);
     };
 
     async getAllUsers(req: Request, res:Response, next:NextFunction) {
@@ -66,9 +67,16 @@ class UserController {
         }
     }
 
-    async changeRoleUser (req: Request, res:Response, next:NextFunction) {
+    async changeRoleUser (req: Request<{ id: string }, {}, {}>, res:Response, next:NextFunction) {
         try {
-            
+            const { id } = req.params;
+
+            await this.service.changeRoleUser({ id });
+
+            res.status(StatusCodes.OK).json({
+                statusCodes: StatusCodes.OK,
+                message: "نقش کاربر با موفقعیت تغییر کرد"
+            })
         } catch (error) {
             next(error);
         }

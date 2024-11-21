@@ -29,8 +29,12 @@ export class UserService {
             return { message: "کاربر مورد نظر پیدا نشد" }
         }
     }
-    async changeRoleUser() {
-        
+    async changeRoleUser({ id }: { id: string }): Promise<void> {
+        const user = await this.checkExistUser(id);
+
+        const changeRoleResult = await user.update({ role: user.role === "ADMIN" ? "USER" : "ADMIN" });
+
+        if (!changeRoleResult) throw createHttpError.InternalServerError("مشکلی در تغییر نقش کاربر رخ داد");
     }
 
     async checkExistUser(id: string) {

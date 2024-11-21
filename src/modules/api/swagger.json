@@ -243,6 +243,9 @@
                     "401": {
                         "description": "unauthorized"
                     },
+                    "403": {
+                        "description": "access denied"
+                    },
                     "404": {
                         "description": "user not found"
                     },
@@ -269,6 +272,9 @@
                     },
                     "401": {
                         "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
                     },
                     "404": {
                         "description": "user not found"
@@ -306,6 +312,9 @@
                     "401": {
                         "description": "unauthorized"
                     },
+                    "403": {
+                        "description": "access denied"
+                    },
                     "404": {
                         "description": "user not found"
                     },
@@ -341,6 +350,48 @@
                     },
                     "401": {
                         "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/users/change-role/{id}": {
+            "put": {
+                "tags": [                
+                    "Users"
+                ],
+                "summary": "change role user by id",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "change role user by id successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
                     },
                     "404": {
                         "description": "user not found"
