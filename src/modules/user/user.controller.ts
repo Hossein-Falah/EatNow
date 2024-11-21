@@ -10,6 +10,7 @@ class UserController {
         
         this.getAllUsers = this.getAllUsers.bind(this);
         this.getUserById = this.getUserById.bind(this);
+        this.removeUserById = this.removeUserById.bind(this);
     };
 
     async getAllUsers(req: Request, res:Response, next:NextFunction) {
@@ -50,9 +51,16 @@ class UserController {
         }
     }
 
-    async removeUserById(req: Request, res:Response, next:NextFunction) {
+    async removeUserById(req: Request<{ id: string }, {}, {}> , res:Response, next:NextFunction) {
         try {
-            
+            const { id } = req.params;
+
+            const { message } = await this.service.removeUserById({ id });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message
+            })
         } catch (error) {
             next(error);
         }

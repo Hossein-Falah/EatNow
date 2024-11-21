@@ -137,7 +137,7 @@ class AuthController {
     getMe(req: CustomRequest, res: Response, next: NextFunction) {
         try {
             const user = req.user;
-
+            
             res.status(StatusCodes.OK).json({
                 statusCode: StatusCodes.OK,
                 message: "get user successFully",

@@ -230,6 +230,11 @@
                 "tags": [
                     "Authentication"
                 ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
                 "summary": "get user",
                 "responses": {
                     "200": {
@@ -297,6 +302,42 @@
                 "responses": {
                     "200": {
                         "description": "get user by id successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/users/remove/{id}": {
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "remove user by id",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "remove user by id successFully"
                     },
                     "401": {
                         "description": "unauthorized"
