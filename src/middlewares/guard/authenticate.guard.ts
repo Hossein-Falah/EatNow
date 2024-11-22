@@ -18,6 +18,7 @@ const getToken = (headers: headersType) => {
     const [bearer, token] = authorization.split(" ");
 
     if (token && ["Bearer", "bearer"].includes(bearer)) return token;
+    
     throw createHttpError.Unauthorized("حساب کاربری شناسایی نشد لطفا مجددا لاگین کنید");
 };
 

@@ -7,21 +7,29 @@
     "components": {
         "securitySchemes": {
             "Authorization": {
-                "type": "apikey",
-                "name": "Authorization",
+                "type": "http",
                 "scheme": "bearer",
-                "in": "header",
+                "bearerFormat": "JWT",
                 "description": "User Token For Authorization: Bearer [user_token] "
             }
         }
     },
     "tags": [
-        { "name": "Authentication", "description": "api authentication user" }
+        {
+            "name": "Authentication",
+            "description": "api authentication user"
+        },
+        {
+            "name": "Users",
+            "description": "api mangement user"
+        }
     ],
     "paths": {
         "/auth/register": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "register user",
                 "requestBody": {
                     "content": {
@@ -57,7 +65,9 @@
         },
         "/auth/login": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "login user",
                 "requestBody": {
                     "content": {
@@ -89,7 +99,9 @@
         },
         "/auth/verify-otp": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "verify otp",
                 "requestBody": {
                     "content": {
@@ -125,7 +137,9 @@
         },
         "/auth/resend-otp": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "resend otp",
                 "requestBody": {
                     "content": {
@@ -157,7 +171,9 @@
         },
         "/auth/refresh-token": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "refresh token",
                 "requestBody": {
                     "content": {
@@ -189,7 +205,9 @@
         },
         "/auth/logout": {
             "post": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
                 "summary": "logout user",
                 "responses": {
                     "200": {
@@ -209,7 +227,14 @@
         },
         "/auth/getMe": {
             "get": {
-                "tags": ["Authentication"],
+                "tags": [
+                    "Authentication"
+                ],
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
                 "summary": "get user",
                 "responses": {
                     "200": {
@@ -217,6 +242,210 @@
                     },
                     "401": {
                         "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "get all users",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get all users successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "get user by id",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get user by id successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/users/update/{id}": {
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "update user by id",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "firstname": "hossein",
+                                    "lastname": "falah",
+                                    "email": "a@b.com",
+                                    "address": "tehran"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "update user by id successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/users/remove/{id}": {
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "remove user by id",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "remove user by id successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/users/change-role/{id}": {
+            "put": {
+                "tags": [                
+                    "Users"
+                ],
+                "summary": "change role user by id",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "change role user by id successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
                     },
                     "404": {
                         "description": "user not found"

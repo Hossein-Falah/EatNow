@@ -1,7 +1,6 @@
 import createHttpError from "http-errors";
 import jwt, { JwtPayload } from "jsonwebtoken"
 import { User } from "../modules/user/user.model";
-import { log } from "console";
 
 const signAccessToken = (user: number) => {
     return jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET!, { expiresIn: "15m" });
