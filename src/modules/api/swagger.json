@@ -22,6 +22,10 @@
         {
             "name": "Users",
             "description": "api mangement user"
+        },
+        {
+            "name": "Food 🍴",
+            "description": "api food route"
         }
     ],
     "paths": {
@@ -449,6 +453,20 @@
                     },
                     "404": {
                         "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/foods": {
+            "get": {
+                "tags": ["Food 🍴"],
+                "summary": "get all Foods",
+                "responses": {
+                    "200": {
+                        "description": "get all foods successFully"
                     },
                     "500": {
                         "description": "internal server error"
