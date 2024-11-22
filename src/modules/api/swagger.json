@@ -473,6 +473,43 @@
                     }
                 }
             }
+        },
+        "/foods/{id}": {
+            "get": {
+                "tags": ["Food 🍴"],
+                "summary": "get details food",
+                "security": [
+                    {
+                        "Authorization": {}
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "food id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get details food successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
         }
     }
 }

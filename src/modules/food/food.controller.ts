@@ -9,6 +9,7 @@ class FoodController {
         this.service = foodService;
 
         this.getAllFoods = this.getAllFoods.bind(this);
+        this.getFoodById = this.getFoodById.bind(this);
     };
 
     async getAllFoods(req:Request, res:Response, next: NextFunction) {
@@ -24,9 +25,16 @@ class FoodController {
         }
     }
 
-    getFoodById(req: Request, res:Response, next:NextFunction) {
+    async getFoodById(req: Request<{id: string}, {}, {}>, res:Response, next:NextFunction) {
         try {
-            
+            const { id } = req.params;
+
+            const food = await this.service.getFoodById({ id });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                food
+            })
         } catch (error) {
             next(error);
         }
