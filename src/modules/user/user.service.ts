@@ -1,5 +1,6 @@
 import createHttpError from "http-errors";
 import { User } from "./user.model";
+import { deleteInvalidPropertyObject } from "../../utils/function.utils";
 
 export class UserService {
     private model: typeof User;
@@ -16,8 +17,21 @@ export class UserService {
         const user  = await User.findByPk(id);
         return user;
     }
-    async updateUserById() {
+    async updateUserById({ id, firstname, lastname, email, address }: { id: string, firstname: string, lastname: string, email: string, address: string }): Promise<void> {
+        const user = await this.checkExistUser(id);
+
+        const userData = {
+            firstname: firstname || user.firstname,
+            lastname: lastname || user.lastname,
+            email: email || user.email,
+            address: address || user.address
+        }
+
+        deleteInvalidPropertyObject(userData, [undefined, null, "", " ", NaN, 0, false]);
         
+        const updateUserResult = await this.model.update(userData, { where: { id: user.id } });
+
+        if (!updateUserResult[0]) throw createHttpError.InternalServerError("به روز رسانی کاربر با مشکل مواجه شد"); 
     }
     async removeUserById({ id }: { id: string }): Promise<{ message: string }> {
         const user = await this.checkExistUser(id);

@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import { NextFunction, Request, Response } from "express";
 import { UserService, userService } from "./user.service";
+import { updateUserValidation } from "./user.validation";
 
 class UserController {
     private service: UserService;
@@ -11,6 +12,7 @@ class UserController {
         this.getAllUsers = this.getAllUsers.bind(this);
         this.getUserById = this.getUserById.bind(this);
         this.removeUserById = this.removeUserById.bind(this);
+        this.updateUserById = this.updateUserById.bind(this);
         this.changeRoleUser = this.changeRoleUser.bind(this);
     };
 
@@ -44,9 +46,20 @@ class UserController {
         }
     }
 
-    async updateUserById(req: Request, res:Response, next:NextFunction) {
+    async updateUserById(req: Request<{ id: string }, {}, { firstname: string; lastname: string; email: string; address: string }>, res:Response, next:NextFunction) {
         try {
+            const { id } = req.params;
+            const { firstname, lastname, email, address } = req.body;
             
+            await updateUserValidation.validateAsync({ firstname, lastname, email, address });
+
+            await this.service.updateUserById({ id, firstname, lastname, email, address });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "اطلاعات شما با موفقعیت ویرایش شد"
+            })
+
         } catch (error) {
             next(error);
         }

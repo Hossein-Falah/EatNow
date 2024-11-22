@@ -324,6 +324,60 @@
                 }
             }
         },
+        "/users/update/{id}": {
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "update user by id",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "firstname": "hossein",
+                                    "lastname": "falah",
+                                    "email": "a@b.com",
+                                    "address": "tehran"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "update user by id successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
         "/users/remove/{id}": {
             "delete": {
                 "tags": [
