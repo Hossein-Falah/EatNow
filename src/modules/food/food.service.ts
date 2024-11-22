@@ -27,8 +27,15 @@ export class FoodService {
 
     }
     
-    removeFood() {
+    async removeFood({ id }: { id: string }): Promise<{ message: string }> {
+        const food = await this.checkExistFood(id);
 
+        if (food) {
+            await food.destroy();
+            return { message: "کاربر مورد نظر پاک شد" }
+        } else {
+            return { message: "کاربر مورد نظر پیدا نشد" }
+        }
     }
 
     async checkExistFood(id:string) {

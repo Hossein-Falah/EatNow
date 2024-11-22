@@ -3,7 +3,7 @@ export interface IFood {
     title: string;
     description: string;
     content: string;
-    category: string[];
+    category: "Fruits" | "Vegetables" | "Meat" | "Dessert" | "Drink";
     price: number;
     quantity: number;
     images: [string];

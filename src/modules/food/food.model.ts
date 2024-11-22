@@ -7,7 +7,7 @@ export class Food extends Model<IFood> implements IFood {
     declare title: string;
     declare description: string;
     declare content: string;
-    declare category: string[];
+    declare category: "Fruits" | "Vegetables" | "Meat" | "Dessert" | "Drink";
     declare price: number;
     declare quantity: number;
     declare images: [string];

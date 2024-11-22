@@ -510,6 +510,146 @@
                     }
                 }
             }
+        },
+        "/foods/add-food": {
+            "post": {
+                "tags": ["Food 🍴"],
+                "summary": "add food",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "title": "title",
+                                    "description": "description",
+                                    "content": "content",
+                                    "category": "category",
+                                    "price": "price",
+                                    "images": "images",
+                                    "rating": "rating",
+                                    "readyTime": "readyTime"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "add food successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/foods/update/{id}": {
+            "patch": {
+                "tags": ["Food 🍴"],
+                "summary": "update food by id",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "food id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "example": {
+                                    "title": "new title",
+                                    "description": "new description",
+                                    "content": "new content",
+                                    "category": "new category",
+                                    "price": "new price",
+                                    "images": "new images",
+                                    "rating": "new rating",
+                                    "readyTime": "new readyTime"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "update food by id successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/foods/remove/{id}": {
+            "delete": {
+                "tags": ["Food 🍴"],
+                "summary": "remove food by id",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "food id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "remove food by id successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
         }
     }
 }
