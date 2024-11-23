@@ -5,8 +5,9 @@ export interface IFood {
     content: string;
     category: "Fruits" | "Vegetables" | "Meat" | "Dessert" | "Drink";
     price: number;
+    slug: string;
     quantity: number;
-    images: [string];
+    images: string[];
     rating: number;
     readyTime: number;
     author: string;

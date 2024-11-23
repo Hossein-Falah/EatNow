@@ -19,8 +19,19 @@ export class FoodService {
         return food;
     }
     
-    createFood() {
+    async createFood({ title, description, content, category, price, slug, images, rating, readyTime, quantity, author }: IFood): Promise<void> {
+        await this.checkExistWithTitle(title);
+        
+        const createFoodResult = await this.model.create({ 
+            title, description, 
+            content, category, 
+            price, images, slug,
+            rating, readyTime, 
+            quantity, 
+            author, isStock: true
+        });
 
+        if (!createFoodResult) throw createHttpError.InternalServerError("مشکلی در ساخت غذا رخ داد");
     }
     
     updateFood() {
@@ -43,7 +54,12 @@ export class FoodService {
         if (!food) throw createHttpError.NotFound("غذای مورد نظر پیدا نشد");
         return food;
     }
-    
+
+    async checkExistWithTitle(title: string) {
+        const food = await this.model.findOne({ where: { title }});
+        if (food) throw createHttpError.Conflict("غذا با این نام قبلا ثبت شده است");
+        return food;
+    }
 }
 
 export const foodService = new FoodService();

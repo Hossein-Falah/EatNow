@@ -9,8 +9,9 @@ export class Food extends Model<IFood> implements IFood {
     declare content: string;
     declare category: "Fruits" | "Vegetables" | "Meat" | "Dessert" | "Drink";
     declare price: number;
+    declare slug: string;
     declare quantity: number;
-    declare images: [string];
+    declare images: string[];
     declare rating: number;
     declare readyTime: number;
     declare author: string;
@@ -59,6 +60,13 @@ Food.init({
         allowNull: false,
         validate: {
             notEmpty: { msg: "قیمت غذا نباید خالی باشد" }
+        }
+    },
+    slug: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: { msg: "اسلاگ نمیتواند خالی باشد" }
         }
     },
     quantity: {

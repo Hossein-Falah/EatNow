@@ -423,7 +423,7 @@
         },
         "/users/change-role/{id}": {
             "put": {
-                "tags": [                
+                "tags": [
                     "Users"
                 ],
                 "summary": "change role user by id",
@@ -462,7 +462,9 @@
         },
         "/foods": {
             "get": {
-                "tags": ["Food 🍴"],
+                "tags": [
+                    "Food 🍴"
+                ],
                 "summary": "get all Foods",
                 "responses": {
                     "200": {
@@ -476,7 +478,9 @@
         },
         "/foods/{id}": {
             "get": {
-                "tags": ["Food 🍴"],
+                "tags": [
+                    "Food 🍴"
+                ],
                 "summary": "get details food",
                 "security": [
                     {
@@ -513,7 +517,9 @@
         },
         "/foods/add-food": {
             "post": {
-                "tags": ["Food 🍴"],
+                "tags": [
+                    "Food 🍴"
+                ],
                 "summary": "add food",
                 "security": [
                     {
@@ -521,19 +527,55 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "type": "object",
-                                "example": {
-                                    "title": "title",
-                                    "description": "description",
-                                    "content": "content",
-                                    "category": "category",
-                                    "price": "price",
-                                    "images": "images",
-                                    "rating": "rating",
-                                    "readyTime": "readyTime"
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "پیتزا"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "یک غذای خوشمزه"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "دستور تهیه پیتزا"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "فست فود"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 120000
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "pizza"
+                                    },
+                                    "quantity": {
+                                        "type": "number",
+                                        "example": 10
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "rating": {
+                                        "type": "number",
+                                        "example": 5
+                                    },
+                                    "readyTime": {
+                                        "type": "number",
+                                        "example": 15
+                                    }
                                 }
                             }
                         }
@@ -552,6 +594,9 @@
                     "404": {
                         "description": "user not found"
                     },
+                    "409": {
+                        "description": "food already exists"
+                    },
                     "500": {
                         "description": "internal server error"
                     }
@@ -560,7 +605,9 @@
         },
         "/foods/update/{id}": {
             "patch": {
-                "tags": ["Food 🍴"],
+                "tags": [
+                    "Food 🍴"
+                ],
                 "summary": "update food by id",
                 "security": [
                     {
@@ -608,6 +655,9 @@
                     "404": {
                         "description": "user not found"
                     },
+                    "409": {
+                        "description": "conflict"
+                    },
                     "500": {
                         "description": "internal server error"
                     }
@@ -616,7 +666,9 @@
         },
         "/foods/remove/{id}": {
             "delete": {
-                "tags": ["Food 🍴"],
+                "tags": [
+                    "Food 🍴"
+                ],
                 "summary": "remove food by id",
                 "security": [
                     {
