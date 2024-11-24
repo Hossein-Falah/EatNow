@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../../config/db.config";
 import { IFood } from "./food.interface";
+import { User } from "../user/user.model";
 
 export class Food extends Model<IFood> implements IFood {
     declare id: string;
@@ -118,3 +119,6 @@ Food.init({
     tableName: "foods",
     timestamps: true
 });
+
+Food.belongsTo(User, { foreignKey: "author", as: "user" });
+User.hasMany(Food, { foreignKey: "author", as: "foods" });
