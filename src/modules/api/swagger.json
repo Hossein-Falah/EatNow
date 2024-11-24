@@ -22,6 +22,10 @@
         {
             "name": "Users",
             "description": "api mangement user"
+        },
+        {
+            "name": "Food 🍴",
+            "description": "api food route"
         }
     ],
     "paths": {
@@ -419,7 +423,7 @@
         },
         "/users/change-role/{id}": {
             "put": {
-                "tags": [                
+                "tags": [
                     "Users"
                 ],
                 "summary": "change role user by id",
@@ -440,6 +444,285 @@
                 "responses": {
                     "200": {
                         "description": "change role user by id successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/foods": {
+            "get": {
+                "tags": [
+                    "Food 🍴"
+                ],
+                "summary": "get all Foods",
+                "responses": {
+                    "200": {
+                        "description": "get all foods successFully"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/foods/{id}": {
+            "get": {
+                "tags": [
+                    "Food 🍴"
+                ],
+                "summary": "get details food",
+                "security": [
+                    {
+                        "Authorization": {}
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "food id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get details food successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/foods/add-food": {
+            "post": {
+                "tags": [
+                    "Food 🍴"
+                ],
+                "summary": "add food",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "پیتزا"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "یک غذای خوشمزه"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "دستور تهیه پیتزا"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "فست فود"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 120000
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "pizza"
+                                    },
+                                    "quantity": {
+                                        "type": "number",
+                                        "example": 10
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "rating": {
+                                        "type": "number",
+                                        "example": 5
+                                    },
+                                    "readyTime": {
+                                        "type": "number",
+                                        "example": 15
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "add food successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "409": {
+                        "description": "food already exists"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/foods/update/{id}": {
+            "patch": {
+                "tags": [
+                    "Food 🍴"
+                ],
+                "summary": "update food by id",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "food id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "پیتزا"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "یک غذای خوشمزه"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "دستور تهیه پیتزا"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "فست فود"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 120000
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "pizza"
+                                    },
+                                    "quantity": {
+                                        "type": "number",
+                                        "example": 10
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "rating": {
+                                        "type": "number",
+                                        "example": 5
+                                    },
+                                    "readyTime": {
+                                        "type": "number",
+                                        "example": 15
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "update food by id successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "409": {
+                        "description": "conflict"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/foods/remove/{id}": {
+            "delete": {
+                "tags": [
+                    "Food 🍴"
+                ],
+                "summary": "remove food by id",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "food id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "remove food by id successFully"
                     },
                     "401": {
                         "description": "unauthorized"
