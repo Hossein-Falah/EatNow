@@ -11,7 +11,7 @@ const uploadFood = uploadMiddleware('foods');
 foodRouter.get(`/`, foodController.getAllFoods);
 foodRouter.get(`/:id`, foodController.getFoodById);
 foodRouter.post(`/add-food`, authenticateUser, AdminGuard as RequestHandler, uploadFood.array('images', 5), foodController.createFood);
-foodRouter.patch(`/update/:id`, foodController.updateFood);
-foodRouter.delete(`/remove/:id`, foodController.removeFood);
+foodRouter.patch(`/update/:id`, AdminGuard as RequestHandler, uploadFood.array('images', 5), foodController.updateFood);
+foodRouter.delete(`/remove/:id`, AdminGuard as RequestHandler, foodController.removeFood);
 
 export default foodRouter;

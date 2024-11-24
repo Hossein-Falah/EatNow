@@ -26,7 +26,7 @@ export const AdminGuard = async (req:Request, res:Response, next:NextFunction) =
                 throw createHttpError.Forbidden("شما دسترسی به این Api Route را ندارید");
             }
         } else {
-            throw createHttpError.Forbidden("شما دسترسی به این Api Route را ندارید")
+            throw createHttpError.Unauthorized("حساب کاربری شناسایی نشد لطفا مجددا لاگین کنید");
         }
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {

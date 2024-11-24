@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { NextFunction, Request, Response } from "express";
 import { foodService, FoodService } from "./food.service";
 import { IFood } from "./food.interface";
-import { createFoodValidation } from "./food.validation";
+import { FoodValidation, updateFoodValidation } from "./food.validation";
 import { IUser } from "../user/user.interface";
 import { deleteImageFile, getListOfImages } from "../../utils/function.utils";
 
@@ -22,6 +22,7 @@ class FoodController {
 
         this.getAllFoods = this.getAllFoods.bind(this);
         this.getFoodById = this.getFoodById.bind(this);
+        this.updateFood = this.updateFood.bind(this);
         this.createFood = this.createFood.bind(this);
         this.removeFood = this.removeFood.bind(this);
     };
@@ -60,7 +61,7 @@ class FoodController {
             const { title, description, content, category, price, slug, rating, readyTime, quantity } = req.body;
             const images = getListOfImages((req as CustomFile).files, "foods")
             
-            await createFoodValidation.validateAsync({ title, description, content, category, price, slug, rating, readyTime, quantity });
+            await FoodValidation.validateAsync({ title, description, content, category, price, slug, rating, readyTime, quantity });
 
             await this.service.createFood({ 
                 title, description, 
@@ -69,7 +70,7 @@ class FoodController {
                 rating, readyTime, 
                 quantity, 
                 author: user?.id ?? '', 
-                isStock: true
+                isStock: quantity > 0 ? true : false
             });
 
             res.status(StatusCodes.CREATED).json({
@@ -83,10 +84,32 @@ class FoodController {
         }
     }
 
-    updateFood(req:Request, res:Response, next:NextFunction) {
+    async updateFood(req:Request<{id: string}, {}, IFood>, res:Response, next:NextFunction) {
         try {
-            
+            const user = (req as CustomRequest).user;
+           
+            const { id } = req.params;
+            const { title, description, content, category, price, slug, quantity, rating, readyTime } = req.body;
+
+            await updateFoodValidation.validateAsync(req.body);
+
+            const images = getListOfImages((req as CustomFile)?.files, "foods");            
+
+            await this.service.updateFood({
+                id, title, description, content, 
+                category, price, slug, quantity, 
+                images, rating, readyTime, 
+                isStock: quantity > 0 ? true : false,
+                author: user?.id ?? ''
+            });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "غذا با موفقعیت آپدیت شد"
+            })
         } catch (error) {
+            const images = getListOfImages((req as CustomFile)?.files, "foods", "/public");
+            await deleteImageFile(images);
             next(error);
         }
     }

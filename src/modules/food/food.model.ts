@@ -79,10 +79,7 @@ Food.init({
     },
     images: {
         type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: false,
-        validate: {
-            notEmpty: { msg: "تصاویر غذا نباید خالی باشد" }
-        }
+        allowNull: false
     },
     rating: {
         type: DataTypes.INTEGER,

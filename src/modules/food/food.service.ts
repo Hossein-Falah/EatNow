@@ -2,6 +2,7 @@ import createHttpError from "http-errors";
 import { Food } from "./food.model";
 import { IFood } from "./food.interface";
 import { User } from "../user/user.model";
+import { deleteInvalidPropertyObject } from "../../utils/function.utils";
 
 export class FoodService {
     private model: typeof Food;
@@ -42,7 +43,7 @@ export class FoodService {
         return food;
     }
     
-    async createFood({ title, description, content, category, price, slug, images, rating, readyTime, quantity, author }: IFood): Promise<void> {
+    async createFood({ title, description, content, category, price, slug, images, rating, readyTime, quantity, isStock, author }: IFood): Promise<void> {
         await this.checkExistWithTitle(title);
         await this.checkExistWithSlug(slug);
         
@@ -52,14 +53,44 @@ export class FoodService {
             price, images, slug,
             rating, readyTime, 
             quantity, 
-            author, isStock: true
+            author, isStock
         });
 
         if (!createFoodResult) throw createHttpError.InternalServerError("مشکلی در ساخت غذا رخ داد");
     }
     
-    updateFood() {
+    async updateFood({ 
+        id, title, description, content, 
+        category, price, slug, quantity, 
+        images, rating, readyTime, isStock, author
+    }: { id: string } & IFood): Promise<void> {
+        const food = await this.checkExistFood(id);
 
+        if (title) {            
+            await this.checkExistWithTitle(title);
+        }
+        
+        if (slug) {
+            await this.checkExistWithSlug(slug);
+        }
+
+        deleteInvalidPropertyObject({ 
+            title, description, content, 
+            category, price, slug, quantity, 
+            images, rating, readyTime, 
+            author 
+        }, ['author', 'user']);
+
+        const updateFoodResult = await this.model.update({
+            title, description, content, 
+            category, price, slug, quantity, 
+            images, rating, readyTime, 
+            isStock, author
+        }, {
+            where: { id: food.id }
+        });
+
+        if (!updateFoodResult[0]) throw createHttpError.InternalServerError("مشکلی در اپدیت غذا رخ داد");
     }
     
     async removeFood({ id }: { id: string }): Promise<{ message: string }> {

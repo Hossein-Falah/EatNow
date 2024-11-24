@@ -624,19 +624,55 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "type": "object",
-                                "example": {
-                                    "title": "new title",
-                                    "description": "new description",
-                                    "content": "new content",
-                                    "category": "new category",
-                                    "price": "new price",
-                                    "images": "new images",
-                                    "rating": "new rating",
-                                    "readyTime": "new readyTime"
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "پیتزا"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "یک غذای خوشمزه"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "دستور تهیه پیتزا"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "فست فود"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 120000
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "pizza"
+                                    },
+                                    "quantity": {
+                                        "type": "number",
+                                        "example": 10
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    },
+                                    "rating": {
+                                        "type": "number",
+                                        "example": 5
+                                    },
+                                    "readyTime": {
+                                        "type": "number",
+                                        "example": 15
+                                    }
                                 }
                             }
                         }
