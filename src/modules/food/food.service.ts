@@ -1,6 +1,7 @@
 import createHttpError from "http-errors";
 import { Food } from "./food.model";
 import { IFood } from "./food.interface";
+import { User } from "../user/user.model";
 
 export class FoodService {
     private model: typeof Food;
@@ -10,17 +11,40 @@ export class FoodService {
     }
 
     async getAllFoods(): Promise<IFood[]> {
-        const foods = await this.model.findAll();
+        const foods = await this.model.findAll({
+            attributes: { exclude: ['author'] },
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: ["id", "firstname", "lastname", "email", "phone", "address"]
+                }
+            ]
+        });
         return foods;
     }
 
-    async getFoodById({id}: { id: string }): Promise<IFood> {
-        const food = await this.checkExistFood(id);
+    async getFoodById({id}: { id: string }): Promise<IFood | []> {
+        const food: IFood | null = await this.model.findOne({
+            where: { id },
+            attributes: { exclude: ['author'] },
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: ["id", "firstname", "lastname", "email", "phone", "address"]
+                }
+            ]
+        })
+
+        if (!food) throw createHttpError.NotFound("غذا مورد نظر یافت نشد");
+
         return food;
     }
     
     async createFood({ title, description, content, category, price, slug, images, rating, readyTime, quantity, author }: IFood): Promise<void> {
         await this.checkExistWithTitle(title);
+        await this.checkExistWithSlug(slug);
         
         const createFoodResult = await this.model.create({ 
             title, description, 
@@ -55,8 +79,14 @@ export class FoodService {
         return food;
     }
 
-    async checkExistWithTitle(title: string) {
+    private async checkExistWithTitle(title: string) {
         const food = await this.model.findOne({ where: { title }});
+        if (food) throw createHttpError.Conflict("غذا با این نام قبلا ثبت شده است");
+        return food;
+    }
+
+    private async checkExistWithSlug(slug: string) {
+        const food = await this.model.findOne({ where: { slug }});
         if (food) throw createHttpError.Conflict("غذا با این نام قبلا ثبت شده است");
         return food;
     }
