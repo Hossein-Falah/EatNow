@@ -14,7 +14,7 @@ export interface IUser {
         food: string;
         quantity: number;
     }[];
-    // orders: string[];
+    orders: string[];
 }
 
 export interface CustomRequest extends Request {
