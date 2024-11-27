@@ -31,13 +31,7 @@ Order.init({
     },
     items: {
         type: DataTypes.JSON,
-        allowNull: false,
-        validate: {
-            isArray: {
-                args: true,
-                msg: "items must be an array"
-            }
-        }
+        allowNull: false
     },
     totalPrice: {
         type: DataTypes.FLOAT,
@@ -62,5 +56,5 @@ Order.init({
     timestamps: true
 });
 
-Order.belongsTo(User, { foreignKey: "userId", as: "user" });
 User.hasMany(Order, { foreignKey: "userId", as: "orders" });
+Order.belongsTo(User, { foreignKey: "userId", as: "user" });

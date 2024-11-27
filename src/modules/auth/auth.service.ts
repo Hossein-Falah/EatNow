@@ -27,8 +27,7 @@ export class AuthService {
             role: userCount === 0 ? "ADMIN" : "USER",
             latitude: 0,
             longitude: 0,
-            cart: [],
-            orders: []
+            cart: []
         })
 
         if (!newUser) throw createHttpError.InternalServerError();
