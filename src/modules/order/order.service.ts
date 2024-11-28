@@ -169,16 +169,12 @@ export class OrderService {
         return { order };
     }
 
-    async deleteOrder() {
+    async deleteOrder({ id }: { id: string }) {
+        const order = await this.model.findByPk(id);
 
-    }
+        if (!order) throw createHttpError.NotFound("سفارش مورد نظر پیدا نشد");
 
-    async calculateOrderTotal() {
-
-    }
-
-    async updateOrderStatus() {
-
+        await order.destroy();
     }
 };
 

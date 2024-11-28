@@ -9,7 +9,5 @@ orderRouter.get(`/filter-by-status`, orderController.getOrdersByStatus);
 orderRouter.get(`/:id`, orderController.getOrderById);
 orderRouter.post(`/create`, orderController.createOrder);
 orderRouter.delete(`/delete/:id`, orderController.deleteOrder);
-orderRouter.get(`/total`, orderController.calculateOrderTotal);
-orderRouter.put(`/update-status/:id`, orderController.updateOrderStatus);
 
 export default orderRouter;

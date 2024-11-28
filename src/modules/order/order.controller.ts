@@ -100,25 +100,16 @@ class OrderController {
         }        
     }
 
-    async deleteOrder(req:Request, res:Response, next:NextFunction) {
+    async deleteOrder(req:Request<{id: string}, {}, {}>, res:Response, next:NextFunction) {
         try {
-            
-        } catch (error) {
-            next(error);
-        }        
-    }
+            const { id } = req.params;
 
-    async calculateOrderTotal(req:Request, res:Response, next:NextFunction) {
-        try {
-            
-        } catch (error) {
-            next(error);
-        }        
-    }
+            await this.service.deleteOrder({ id });
 
-    async updateOrderStatus(req:Request, res:Response, next:NextFunction) {
-        try {
-            
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "سفارش با موفقعیت حذف شد"
+            })
         } catch (error) {
             next(error);
         }        
