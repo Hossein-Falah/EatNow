@@ -18,7 +18,6 @@ export class User extends Model<IUser> implements IUser {
         food: string;
         quantity: number
     }[];
-    // declare orders: string[];
 };
 
 User.init({
@@ -92,16 +91,7 @@ User.init({
         type: DataTypes.JSON,
         allowNull: true,
         defaultValue: []
-    },
-    // orders: {
-    //     type: DataTypes.ARRAY(DataTypes.UUID),
-    //     allowNull: true,
-    //     references: {
-    //         model: "orders",
-    //         key: "id"
-    //     },
-    //     defaultValue: []
-    // }
+    }
 }, {
     sequelize: sequelize,
     tableName: "users",
