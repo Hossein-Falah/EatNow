@@ -2,6 +2,7 @@ import createHttpError from "http-errors";
 import { IOrder } from "./order.interface";
 import { Order } from "./order.model";
 import { Food } from "../food/food.model";
+import { User } from "../user/user.model";
 
 export class OrderService {
     private model: typeof Order;
@@ -12,8 +13,35 @@ export class OrderService {
         this.foodModel = Food
     };
 
-    async getAllOrders() {
+    async getAllOrders(): Promise<IOrder[]> {
+        const orders = await this.model.findAll({
+            attributes: { exclude: ['userId'] },
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: ["id", "firstname", "lastname", "email", "phone", "address"]
+                }
+            ]
+        });
 
+        const populatedOrders = await Promise.all(
+            orders.map(async (order) => {
+                const populatedItems = await Promise.all(
+                    order.items.map(async (item) => {
+                        const food = await this.foodModel.findByPk(item.foodId, {
+                            attributes: ["id", "title", "description", "content", "category", "price", "slug", "images", "rating", "readyTime", "quantity", "isStock"]
+                        });
+
+                        return { ...item, food };
+                    })
+                )
+
+                return { ...order.toJSON(), items: populatedItems };
+            })
+        )
+
+        return populatedOrders
     }
 
     async getUserOrders() {

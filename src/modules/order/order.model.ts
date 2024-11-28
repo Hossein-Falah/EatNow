@@ -2,6 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import sequelize from "../../config/db.config";
 import { User } from "../user/user.model";
 import { IOrder } from "./order.interface";
+import { Food } from "../food/food.model";
 
 export class Order extends Model<IOrder> implements IOrder {
     declare id: string;
@@ -58,3 +59,17 @@ Order.init({
 
 User.hasMany(Order, { foreignKey: "userId", as: "orders" });
 Order.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+
+Order.belongsToMany(Food, {
+    through: "OrderFood",
+    foreignKey: "orderId",
+    otherKey: "foodId",
+    as: "foods",
+});
+Food.belongsToMany(Order, {
+    through: "OrderFood",
+    foreignKey: "foodId",
+    otherKey: "orderId",
+    as: "orders",
+});

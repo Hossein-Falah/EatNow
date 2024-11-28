@@ -10,12 +10,18 @@ class OrderController {
     constructor() {
         this.service = orderService;
 
+        this.getAllOrders = this.getAllOrders.bind(this);
         this.createOrder = this.createOrder.bind(this);
     }
 
     async getAllOrders(req:Request, res:Response, next:NextFunction) {
         try {
-            
+            const orders = await this.service.getAllOrders();
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                orders
+            })
         } catch (error) {
             next(error);
         }            
