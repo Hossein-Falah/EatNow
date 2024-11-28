@@ -60,16 +60,5 @@ Order.init({
 User.hasMany(Order, { foreignKey: "userId", as: "orders" });
 Order.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-
-Order.belongsToMany(Food, {
-    through: "OrderFood",
-    foreignKey: "orderId",
-    otherKey: "foodId",
-    as: "foods",
-});
-Food.belongsToMany(Order, {
-    through: "OrderFood",
-    foreignKey: "foodId",
-    otherKey: "orderId",
-    as: "orders",
-});
+Order.hasMany(Food, { foreignKey: "orderId", as: "foods" });
+Food.belongsTo(Order, { foreignKey: "orderId", as: "orders" });

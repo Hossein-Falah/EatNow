@@ -1,8 +1,8 @@
+import { StatusCodes } from "http-status-codes";
 import { NextFunction, Request, Response } from "express";
 import { orderService, OrderService } from "./order.service";
 import { IOrder } from "./order.interface";
 import { createOrderValidation } from "./order.validation";
-import { StatusCodes } from "http-status-codes";
 
 class OrderController {
     private service: OrderService;
@@ -11,6 +11,7 @@ class OrderController {
         this.service = orderService;
 
         this.getAllOrders = this.getAllOrders.bind(this);
+        this.getUserOrders = this.getUserOrders.bind(this);
         this.createOrder = this.createOrder.bind(this);
     }
 
@@ -27,9 +28,16 @@ class OrderController {
         }            
     }
 
-    async getUserOrders(req:Request, res:Response, next:NextFunction) {
+    async getUserOrders(req:Request<{id: string}, {}, {}>, res:Response, next:NextFunction) {
         try {
-            
+            const { id } = req.params;
+
+            const orders = await this.service.getUserOrders({ id });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                orders
+            })
         } catch (error) {
             next(error);
         }        
