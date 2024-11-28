@@ -176,6 +176,16 @@ export class OrderService {
 
         await order.destroy();
     }
+
+    async changeOrderStatus({ id, status }: { id: string, status: "PENDING" | "PREPARING" | "DELIVERED" | "CANCELED" }) {
+        const order = await this.model.findByPk(id);
+
+        if (!order) throw createHttpError.NotFound("سفارش مورد نظر پیدا نشد");
+
+        const updatedOrder = await order.update({ status });
+
+        if (!updatedOrder) throw createHttpError.InternalServerError("مشکلی در تغییر وضیعت پیش آمده")
+    }
 };
 
 export const orderService = new OrderService();

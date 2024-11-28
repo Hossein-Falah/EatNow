@@ -20,6 +20,8 @@ class OrderController {
         this.getOrdersByStatus = this.getOrdersByStatus.bind(this);
         this.getOrderById = this.getOrderById.bind(this);
         this.createOrder = this.createOrder.bind(this);
+        this.deleteOrder = this.deleteOrder.bind(this);
+        this.changeOrderStatus = this.changeOrderStatus.bind(this);
     }
 
     async getAllOrders(req:Request, res:Response, next:NextFunction) {
@@ -120,6 +122,23 @@ class OrderController {
         } catch (error) {
             next(error);
         }        
+    }
+
+    async changeOrderStatus(req:Request<{ id: string }, {}, { status: "PENDING" | "PREPARING" | "DELIVERED" | "CANCELED" }>, res:Response, next:NextFunction) {
+        try {
+            const { id } = req.params;
+            const { status } = req.body;
+
+            await this.service.changeOrderStatus({ id, status });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "وضعیت سفارش با موفقعیت تغییر کرد"
+            })
+
+        } catch (error) {
+            next(error);
+        }
     }
 };
 

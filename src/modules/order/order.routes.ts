@@ -11,5 +11,6 @@ orderRouter.get(`/filter-by-status`, AdminGuard as RequestHandler, orderControll
 orderRouter.get(`/:id`, AdminGuard as RequestHandler, orderController.getOrderById);
 orderRouter.post(`/create`, authenticateUser, orderController.createOrder);
 orderRouter.delete(`/delete/:id`, AdminGuard as RequestHandler, orderController.deleteOrder);
+orderRouter.put(`/change-status/:id`, AdminGuard as RequestHandler, orderController.changeOrderStatus);
 
 export default orderRouter;
