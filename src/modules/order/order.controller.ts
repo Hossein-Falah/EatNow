@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { orderService, OrderService } from "./order.service";
 import { IOrder } from "./order.interface";
 import { createOrderValidation } from "./order.validation";
+import { log } from "util";
 
 class OrderController {
     private service: OrderService;
@@ -12,6 +13,7 @@ class OrderController {
 
         this.getAllOrders = this.getAllOrders.bind(this);
         this.getUserOrders = this.getUserOrders.bind(this);
+        this.getOrdersByStatus = this.getOrdersByStatus.bind(this);
         this.createOrder = this.createOrder.bind(this);
     }
 
@@ -43,9 +45,23 @@ class OrderController {
         }        
     }
 
-    async getOrdersByStatus(req:Request, res:Response, next:NextFunction) {
+    async getOrdersByStatus(req:Request<{}, {}, {}, { status: string }>, res:Response, next:NextFunction) {
         try {
+            const { status } = req.query;
             
+            if (!status) {
+                res.status(StatusCodes.BAD_REQUEST).json({
+                    statusCode: StatusCodes.BAD_REQUEST,
+                    message: "پارامتر status اجباری است",
+                });
+            }
+
+            const orders = await this.service.getOrdersByStatus({ status });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                orders
+            });
         } catch (error) {
             next(error);
         }            

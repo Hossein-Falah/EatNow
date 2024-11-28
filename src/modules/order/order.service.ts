@@ -76,8 +76,36 @@ export class OrderService {
         return populatedOrders;
     }
     
-    async getOrdersByStatus() {
-        
+    async getOrdersByStatus({ status }: { status: string }): Promise<IOrder[]> {
+        const orders = await this.model.findAll({
+            attributes: { exclude: ['userId'] },
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: ["id", "firstname", "lastname", "email", "phone", "address"]
+                }
+            ],
+            where: { status }
+        });
+
+        const populatedOrders = await Promise.all(
+            orders.map(async (order) => {
+                const populatedItems = await Promise.all(
+                    order.items.map(async (item) => {
+                        const food = await this.foodModel.findByPk(item.foodId, {
+                            attributes: ["id", "title", "description", "content", "category", "price", "slug", "images", "rating", "readyTime", "quantity", "isStock"]
+                        });
+
+                        return { ...item, food };
+                    })
+                )
+
+                return { ...order.toJSON(), items: populatedItems };
+            })
+        )
+    
+        return populatedOrders;
     }
 
     async getOrderById() {
