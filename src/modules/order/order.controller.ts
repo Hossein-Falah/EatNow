@@ -3,7 +3,6 @@ import { NextFunction, Request, Response } from "express";
 import { orderService, OrderService } from "./order.service";
 import { IOrder } from "./order.interface";
 import { createOrderValidation } from "./order.validation";
-import { log } from "util";
 
 class OrderController {
     private service: OrderService;
@@ -14,6 +13,7 @@ class OrderController {
         this.getAllOrders = this.getAllOrders.bind(this);
         this.getUserOrders = this.getUserOrders.bind(this);
         this.getOrdersByStatus = this.getOrdersByStatus.bind(this);
+        this.getOrderById = this.getOrderById.bind(this);
         this.createOrder = this.createOrder.bind(this);
     }
 
@@ -67,9 +67,16 @@ class OrderController {
         }            
     }
 
-    async getOrderById(req:Request, res:Response, next:NextFunction) {
+    async getOrderById(req:Request<{id: string}, {}, {}>, res:Response, next:NextFunction) {
         try {
-        
+            const { id } = req.params;
+
+            const order = await this.service.getOrderById({ id });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                order
+            })
         } catch (error) {
             next(error);
         }        

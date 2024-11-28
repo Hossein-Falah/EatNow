@@ -1,5 +1,5 @@
 import createHttpError from "http-errors";
-import { IOrder } from "./order.interface";
+import { IOrder, IOrderItem } from "./order.interface";
 import { Order } from "./order.model";
 import { Food } from "../food/food.model";
 import { User } from "../user/user.model";
@@ -108,8 +108,31 @@ export class OrderService {
         return populatedOrders;
     }
 
-    async getOrderById() {
+    async getOrderById({ id }: { id: string }): Promise<IOrder | null> {
+        const order = await this.model.findByPk(id, {
+            attributes: { exclude: ['userId'] },
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: ["id", "firstname", "lastname", "email", "phone", "address"]
+                }
+            ]
+        });
 
+        if (!order) throw createHttpError.NotFound("سفارش مورد نظر پیدا نشد");
+
+        const populatedItems: IOrderItem[] = await Promise.all(
+            order.items.map(async (item) => {
+                const food = await this.foodModel.findByPk(item.foodId, {
+                    attributes: ["id", "title", "description", "content", "category", "price", "slug", "images", "rating", "readyTime", "quantity", "isStock"]
+                });
+
+                return { ...item, food };
+            })
+        )
+
+        return { ...order.toJSON(), items: populatedItems };
     }
 
     async createOrder({ userId, items, address }: IOrder): Promise<{ order: IOrder}> {

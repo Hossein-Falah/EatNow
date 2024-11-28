@@ -1,3 +1,5 @@
+import { IFood } from "../food/food.interface";
+
 export interface IOrder {
     id?: string;
     userId: string;
@@ -8,4 +10,10 @@ export interface IOrder {
     totalPrice?: number;
     status: "PENDING" | "PREPARING" | "DELIVERED" | "CANCELED";
     address: string;
+}
+
+export interface IOrderItem {
+    foodId: string;
+    quantity: number;
+    food?: IFood | null; // Optional populated food details
 }
