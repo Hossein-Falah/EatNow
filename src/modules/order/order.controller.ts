@@ -3,6 +3,11 @@ import { NextFunction, Request, Response } from "express";
 import { orderService, OrderService } from "./order.service";
 import { IOrder } from "./order.interface";
 import { createOrderValidation } from "./order.validation";
+import { IUser } from "../user/user.interface";
+
+interface CustomRequest extends Request {
+    user?: IUser;
+}
 
 class OrderController {
     private service: OrderService;
@@ -30,11 +35,11 @@ class OrderController {
         }            
     }
 
-    async getUserOrders(req:Request<{id: string}, {}, {}>, res:Response, next:NextFunction) {
+    async getUserOrders(req:Request, res:Response, next:NextFunction) {
         try {
-            const { id } = req.params;
+            const user = (req as CustomRequest).user;
 
-            const orders = await this.service.getUserOrders({ id });
+            const orders = await this.service.getUserOrders({ id: user?.id as string });
 
             res.status(StatusCodes.OK).json({
                 statusCode: StatusCodes.OK,
@@ -84,11 +89,13 @@ class OrderController {
 
     async createOrder(req:Request<{}, {}, IOrder>, res:Response, next:NextFunction) {
         try {
-            const { userId, items, address, status } = req.body;
+            const user = (req as CustomRequest).user;
 
-            await createOrderValidation.validateAsync({ userId, items, address });
+            const { items, address, status } = req.body;
 
-            const { order } = await this.service.createOrder({ userId, items, address, status });
+            await createOrderValidation.validateAsync({ userId: user?.id, items, address });
+
+            const { order } = await this.service.createOrder({ userId: user?.id as string, items, address, status });
 
             res.status(StatusCodes.CREATED).json({
                 statusCode: StatusCodes.CREATED,
