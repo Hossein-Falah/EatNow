@@ -1066,23 +1066,19 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "name": {
+                                    "title": {
                                         "type": "string",
-                                        "example": "lunch"
+                                        "example": "پیتزا"
                                     },
                                     "image": {
                                         "type": "string",
                                         "format": "binary"
                                     }
-                                },
-                                "required": [
-                                    "name",
-                                    "image"
-                                ]
+                                }
                             }
                         }
                     }

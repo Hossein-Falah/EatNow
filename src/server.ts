@@ -1,10 +1,10 @@
 import http from "http";
 
 import createHttpError from "http-errors";
-// import { ApolloServer } from "@apollo/server";
-// import { startStandaloneServer } from "@apollo/server/standalone";
-// import { expressMiddleware } from "@apollo/server/express4";
-// import { graphqlUploadExpress } from "graphql-upload-ts";
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { expressMiddleware } from "@apollo/server/express4";
+import { graphqlUploadExpress } from "graphql-upload-ts";
 import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
@@ -16,20 +16,20 @@ import sequelize from "./config/db.config";
 import { AllRoutes } from "./routes/index.routes";
 import { CustomError } from "./errors/customError";
 import { swaggerRoute } from "./modules/api/swagger.routes";
-// import { RootResolvers } from "./graphql/index.resolver";
-// import { schema } from "./graphql/index.schema";
+import { schema } from "./graphql/index.schema";
+import { RootResolvers } from "./graphql/index.resolver";
 
 export class Application {
     private app: express.Application
     private PORT: number;
-    // private apolloServer!: ApolloServer;
+    private apolloServer!: ApolloServer;
 
     constructor(PORT:number) {
         this.app = express();
         this.PORT = PORT;
     
         this.configuration();
-        // this.setupApolloServer();
+        this.setupApolloServer();
         this.setupServer();
         this.setupDB();
         this.setupRoutes();
@@ -42,28 +42,28 @@ export class Application {
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(cookieParser());
-        // this.app.use(graphqlUploadExpress());
         this.app.use(express.static('public'));
     };
 
     private async setupApolloServer() {
-        // this.apolloServer = new ApolloServer({
-        //     typeDefs: schema,
-        //     resolvers: RootResolvers,
-        //     csrfPrevention: false
-        // });
+        this.apolloServer = new ApolloServer({
+            typeDefs: schema,
+            resolvers: RootResolvers,
+            csrfPrevention: false
+        });
 
-        // const { url } = await startStandaloneServer(this.apolloServer, {
-        //     listen: { port: +process.env.GRAPHQL_PORT! }
-        // });
+        const { url } = await startStandaloneServer(this.apolloServer, {
+            listen: { port: +process.env.GRAPHQL_PORT! }
+        });
 
-        // // Use Apollo middleware with Express
-        // this.app.use(
-        //     "/graphql",
-        //     expressMiddleware(this.apolloServer)
-        // );
+        // Use Apollo middleware with Express
+        this.app.use(
+            "/graphql",
+            graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 10 }), // 10MB limited
+            expressMiddleware(this.apolloServer)
+        );
         
-        // console.log(`✅ Apollo Server running at ${url}graphql`);
+        console.log(`✅ Apollo Server running at ${url}graphql`);
     }
 
     private setupServer() {
