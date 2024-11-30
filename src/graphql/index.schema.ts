@@ -9,6 +9,7 @@ export const schema = `
 
     type Query {
         getAllCategories: [Category]
+        getCategoryById(id: String!): Category
     }
     type Mutation {
         _empty: String
