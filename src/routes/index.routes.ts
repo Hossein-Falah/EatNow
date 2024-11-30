@@ -12,7 +12,7 @@ AllRoutes.use(`/auth`, authRouter);
 AllRoutes.use(`/users`, AdminGuard as RequestHandler, userRouter);
 AllRoutes.use(`/foods`, foodRouter);
 AllRoutes.use(`/orders`, orderRouter);
-AllRoutes.use(`/categories`, categoryRouter);
+AllRoutes.use(`/categories`, AdminGuard as RequestHandler, categoryRouter);
 
 export { 
     AllRoutes
