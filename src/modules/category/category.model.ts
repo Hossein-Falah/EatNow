@@ -5,7 +5,7 @@ import sequelize from "../../config/db.config";
 export class Category extends Model<ICategory> implements ICategory {
     declare id: string;
     declare title: string;
-    declare images: string[]
+    declare image: string
 };
 
 Category.init({
@@ -22,7 +22,7 @@ Category.init({
             len: { args: [3, 20], msg: "عنوان دسته بندی باید بین 3 تا 20 کاراکتر باشد" }
         }
     },
-    images: {
+    image: {
         type: DataTypes.STRING,
         allowNull: false
     }

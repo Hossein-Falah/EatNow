@@ -51,8 +51,18 @@ const getListOfImages = (files: File[] = [], folder: string, basePath:string = "
         })
 }
 
+const getImageUrl = (file: File | null, folder: string, basePath: string = ""): string | null => {
+    if (!file || !file.path) return null;
+    
+    const originalName = file.path.replace(/\\/g, "/").split("/").pop();
+    if (!originalName) return null;
+
+    return `${basePath}/uploads/${folder}/${originalName}`;
+};
+
 export {
     deleteInvalidPropertyObject,
     getListOfImages,
-    deleteImageFile
+    deleteImageFile,
+    getImageUrl
 }
