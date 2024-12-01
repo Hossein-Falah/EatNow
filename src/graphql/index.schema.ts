@@ -12,6 +12,6 @@ export const schema = `
         getCategoryById(id: String!): Category
     }
     type Mutation {
-        _empty: String
+        removeCategoryById(id: String!): Response
     }
 `;

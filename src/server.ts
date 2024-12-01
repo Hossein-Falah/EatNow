@@ -5,6 +5,7 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { expressMiddleware } from "@apollo/server/express4";
 import { graphqlUploadExpress } from "graphql-upload-ts";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
@@ -60,7 +61,9 @@ export class Application {
         this.app.use(
             "/graphql",
             graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 10 }), // 10MB limited
-            expressMiddleware(this.apolloServer)
+            expressMiddleware(this.apolloServer, {
+                context: async ({ req, res }) => ({ req, res })
+            })
         );
         
         console.log(`✅ Apollo Server running at ${url}graphql`);

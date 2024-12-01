@@ -1,3 +1,4 @@
+import { AdminGuard } from "../../middlewares/guard/admin.guard";
 import { Category } from "../../modules/category/category.model";
 
 const getAllCategories = async () => {
@@ -22,8 +23,21 @@ const getCategoryById = async (_:any, { id }: { id: string }) => {
     }
 };
 
-const removeCategoryById = async (_:any, args:any, context: any) => {
-
+const removeCategoryById = async (_:any, { id }: { id: string }) => {
+    try {
+        const category = await Category.findByPk(id);
+        
+        if (category) {
+            await category.destroy();
+            return { success: true, error: false, message: "دسته بندی با موفقعیت حذف شد" };
+        } else {
+            return { success: false, error: true, message: "دسته بندی مورد نظر پیدا نشد" };
+        }
+    } catch (error:unknown) {
+        if (error instanceof Error) {
+            return { success: false, error: true, message: error.message };
+        }
+    }
 };
 
 export {
