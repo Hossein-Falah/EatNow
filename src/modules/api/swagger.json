@@ -30,6 +30,10 @@
         {
             "name": "Order 🍽️",
             "description": "mangement order route"
+        },
+        {
+            "name": "Category 🏷️",
+            "description": "api category route"
         }
     ],
     "paths": {
@@ -1041,6 +1045,59 @@
                     },
                     "404": {
                         "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/categories/create": {
+            "post": {
+                "tags": [
+                    "Category 🏷️"
+                ],
+                "summary": "create category",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "پیتزا"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "create category successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "400": {
+                        "description": "bad request"
                     },
                     "500": {
                         "description": "internal server error"

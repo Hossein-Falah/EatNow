@@ -13,11 +13,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@apollo/server": "^4.11.2",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "graphql-upload-ts": "^2.1.2",
     "http-errors": "^2.0.0",
     "http-status-codes": "^2.3.0",
     "joi": "^17.13.3",
