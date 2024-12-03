@@ -45,3 +45,29 @@ export const AdminGuard = async (req:Request, res:Response, next:NextFunction) =
         next(error);
     }
 }
+
+export const adminGuardUseGraphQL = async (token: string | undefined) => {
+    if (!token) {
+        throw createHttpError.Unauthorized("توکن دریافت نشد لطفا مجددا وارد شوید");
+    }
+
+    try {
+        const { user }:JwtPayload = <JwtPayload>jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);
+        
+        const userInfo: IUser | null = await User.findOne({ where: { phone: user } });
+
+        if (userInfo?.role === "ADMIN") {
+            return userInfo;
+        } else {
+            throw createHttpError.Forbidden("شما دسترسی به این Api Route را ندارید");
+        }
+    } catch (error) {
+        if (error instanceof jwt.TokenExpiredError) {
+            throw createHttpError.Unauthorized("توکن منقضی شده است. لطفا مجدداً وارد شوید.");
+        }
+        if (error instanceof jwt.JsonWebTokenError) {
+            throw createHttpError.Unauthorized("توکن نامعتبر است.");
+        }
+        throw error;
+    }
+}

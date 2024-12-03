@@ -47,7 +47,13 @@ export class Application {
             mutation: RootMutation
         });
 
-        this.app.use(`/graphql`, createHandler({ schema }));
+        this.app.use(`/graphql`, createHandler({
+            schema, 
+            context: async (req:any, res) => {
+                const authorization = req.headers['authorization']?.split(" ")[1];
+                return { req, res, token: authorization };
+            }
+        }));
     }
 
     private setupServer() {

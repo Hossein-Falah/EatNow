@@ -5,6 +5,6 @@ export interface IComment {
     parentId?: string | null;
     foodId: string;
     status: "PENDING" | "APPROVED" | "REJECTED";
-    likes: number;
-    dislikes: number;
+    like: number;
+    dislike: number;
 }

@@ -2,16 +2,17 @@ import { DataTypes, Model } from "sequelize";
 import sequelize from "../../config/db.config";
 import { User } from "../user/user.model";
 import { Food } from "../food/food.model";
+import { IComment } from "./comment.interface";
 
-export class Comment extends Model {
+export class Comment extends Model<IComment> implements IComment {
     declare id?: string;
     declare content: string;
     declare authorId: string;
     declare parentId?: string | null;
     declare foodId: string;
     declare status: "PENDING" | "APPROVED" | "REJECTED";
-    declare likes: number;
-    declare dislikes: number;
+    declare like: number;
+    declare dislike: number;
 }
 
 Comment.init({
@@ -53,7 +54,7 @@ Comment.init({
         allowNull: false,
         defaultValue: "PENDING"
     },
-    likes: {
+    like: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
@@ -61,7 +62,7 @@ Comment.init({
             min: 0
         }
     },
-    dislikes: {
+    dislike: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
