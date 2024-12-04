@@ -89,6 +89,20 @@ const getAllCommentsForAdmin = {
     }
 }
 
+const getAllComment = {
+    type: new GraphQLList(CommentType),
+    resolve: async (_:{}, args: {}, context:IGraphQLContext) => {
+        try {
+            const comments = await Comment.findAll({ where: { status: "APPROVED" } });
+            return comments;
+        } catch (error) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const checkExistFood = async (id:string): Promise<IFood> => {
     const food = await Food.findByPk(id);
     if (!food) throw createHttpError.NotFound("غذای مورد نظر پیدا نشد");
@@ -103,5 +117,6 @@ const checkExistComment = async (id:string): Promise<IComment> => {
 
 export {
     createComment,
-    getAllCommentsForAdmin
+    getAllCommentsForAdmin,
+    getAllComment
 }
