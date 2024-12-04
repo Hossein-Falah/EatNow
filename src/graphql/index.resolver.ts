@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from "graphql";
 import { getAllCategories, getCategoryById, removeCategoryById } from "./resolvers/category.resolver";
-import { createComment, getAllComment, getAllCommentsForAdmin } from "./resolvers/comment.resolver";
+import { createComment, getAllComment, getAllCommentsForAdmin, getCommentById } from "./resolvers/comment.resolver";
 
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
@@ -8,7 +8,8 @@ const RootQuery = new GraphQLObjectType({
         getAllCategories,
         getCategoryById,
         getAllCommentsForAdmin,
-        getAllComment
+        getAllComment,
+        getCommentById
     }
 })
 

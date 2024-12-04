@@ -103,6 +103,24 @@ const getAllComment = {
     }
 }
 
+const getCommentById = {
+    type: CommentType,
+    args: {
+        id: { type: GraphQLString }
+    },
+    resolve: async (_:{}, { id }: { id: string }, context:IGraphQLContext) => {
+        try {
+            await adminGuardUseGraphQL(context.token);
+            const comment = await Comment.findByPk(id);
+            return comment;
+        } catch (error) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const checkExistFood = async (id:string): Promise<IFood> => {
     const food = await Food.findByPk(id);
     if (!food) throw createHttpError.NotFound("غذای مورد نظر پیدا نشد");
@@ -118,5 +136,6 @@ const checkExistComment = async (id:string): Promise<IComment> => {
 export {
     createComment,
     getAllCommentsForAdmin,
-    getAllComment
+    getAllComment,
+    getCommentById
 }
