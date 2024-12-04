@@ -1,4 +1,4 @@
-import { GraphQLString } from "graphql";
+import { GraphQLList, GraphQLString } from "graphql";
 import createHttpError from "http-errors";
 
 import { ResponseType } from "../types/response.types";
@@ -8,6 +8,8 @@ import { authenticateUserWithGraphQL } from "../../middlewares/guard/authenticat
 import { Food } from "../../modules/food/food.model";
 import { Comment } from "../../modules/comment/comment.model";
 import { IFood } from "../../modules/food/food.interface";
+import { CommentType } from "../types/comment.types";
+import { adminGuardUseGraphQL } from "../../middlewares/guard/admin.guard";
 
 const createComment = {
     type: ResponseType,
@@ -16,7 +18,7 @@ const createComment = {
         parentId: { type: GraphQLString },
         foodId: { type: GraphQLString }
     },
-    resolve: async (_:any, { content, parentId, foodId }: IComment, context:IGraphQLContext) => {
+    resolve: async (_:{}, { content, parentId, foodId }: IComment, context:IGraphQLContext) => {
         try {
             const user = await authenticateUserWithGraphQL(context.token);
 
@@ -71,6 +73,22 @@ const createComment = {
     }
 };
 
+const getAllCommentsForAdmin = {
+    type: new GraphQLList(CommentType),
+    resolve: async (_:{}, args: {}, context:IGraphQLContext) => {
+        try {
+            await adminGuardUseGraphQL(context.token);
+            
+            const comments = await Comment.findAll();
+            return comments
+        } catch (error) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const checkExistFood = async (id:string): Promise<IFood> => {
     const food = await Food.findByPk(id);
     if (!food) throw createHttpError.NotFound("غذای مورد نظر پیدا نشد");
@@ -84,5 +102,6 @@ const checkExistComment = async (id:string): Promise<IComment> => {
 }
 
 export {
-    createComment
+    createComment,
+    getAllCommentsForAdmin
 }
