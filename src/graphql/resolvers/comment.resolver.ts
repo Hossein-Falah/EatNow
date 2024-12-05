@@ -147,6 +147,31 @@ const removeCommentById = {
     }
 }
 
+const acceptComment = {
+    type: ResponseType,
+    args: {
+        id: { type: GraphQLString }
+    },
+    resolve: async (_:{}, { id }: { id: string }, context:IGraphQLContext) => {
+        try {
+            await adminGuardUseGraphQL(context.token);
+
+            const comment = await checkExistComment(id);
+
+            if (comment) {
+                const updateComment = await Comment.update({ status: "APPROVED" }, { where: { id } });
+                if (!updateComment[0]) throw createHttpError.InternalServerError("خطایی در تایید کامنت رخ داده");
+
+                return { success: true, error: false, message: "کامنت با موفقعیت تایید شد" };
+            }
+        } catch(error) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const checkExistFood = async (id:string): Promise<IFood> => {
     const food = await Food.findByPk(id);
     if (!food) throw createHttpError.NotFound("غذای مورد نظر پیدا نشد");
@@ -164,5 +189,6 @@ export {
     getAllCommentsForAdmin,
     getAllComment,
     getCommentById,
-    removeCommentById
+    removeCommentById,
+    acceptComment
 }
