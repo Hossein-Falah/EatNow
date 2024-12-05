@@ -1,13 +1,31 @@
-import { GraphQLUpload } from "graphql-upload-ts";
-import * as categoryResolver from "./resolvers/category.resolver";
+import { GraphQLObjectType } from "graphql";
+import { getAllCategories, getCategoryById, removeCategoryById } from "./resolvers/category.resolver";
+import { acceptComment, answerComment, createComment, getAllComment, getAllCommentsForAdmin, getCommentById, rejectComment, removeCommentById } from "./resolvers/comment.resolver";
 
-export const RootResolvers = {
-    Upload: GraphQLUpload,
-    Query: {
-        getAllCategories: categoryResolver.getAllCategories,
-        getCategoryById: categoryResolver.getCategoryById
-    },
-    Mutation: {
-        removeCategoryById: categoryResolver.removeCategoryById
+const RootQuery = new GraphQLObjectType({
+    name: "RootQuery",
+    fields: {
+        getAllCategories,
+        getCategoryById,
+        getAllCommentsForAdmin,
+        getAllComment,
+        getCommentById
     }
+})
+
+const RootMutation = new GraphQLObjectType({
+    name: "RootMutation",
+    fields: {
+        removeCategoryById,
+        createComment,
+        removeCommentById,
+        acceptComment,
+        rejectComment,
+        answerComment
+    }
+});
+
+export {
+    RootQuery,
+    RootMutation
 }

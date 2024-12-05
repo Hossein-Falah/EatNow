@@ -1,11 +1,8 @@
 import http from "http";
 
+import { GraphQLSchema } from "graphql";
+import { createHandler } from "graphql-http/lib/use/express";
 import createHttpError from "http-errors";
-import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
-import { expressMiddleware } from "@apollo/server/express4";
-import { graphqlUploadExpress } from "graphql-upload-ts";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
@@ -17,20 +14,18 @@ import sequelize from "./config/db.config";
 import { AllRoutes } from "./routes/index.routes";
 import { CustomError } from "./errors/customError";
 import { swaggerRoute } from "./modules/api/swagger.routes";
-import { schema } from "./graphql/index.schema";
-import { RootResolvers } from "./graphql/index.resolver";
+import { RootMutation, RootQuery } from "./graphql/index.resolver";
 
 export class Application {
     private app: express.Application
     private PORT: number;
-    private apolloServer!: ApolloServer;
 
     constructor(PORT:number) {
         this.app = express();
         this.PORT = PORT;
     
         this.configuration();
-        this.setupApolloServer();
+        this.setupGraphQLServer();
         this.setupServer();
         this.setupDB();
         this.setupRoutes();
@@ -46,27 +41,19 @@ export class Application {
         this.app.use(express.static('public'));
     };
 
-    private async setupApolloServer() {
-        this.apolloServer = new ApolloServer({
-            typeDefs: schema,
-            resolvers: RootResolvers,
-            csrfPrevention: false
+    private async setupGraphQLServer() {
+        const schema = new GraphQLSchema({
+            query: RootQuery,
+            mutation: RootMutation
         });
 
-        const { url } = await startStandaloneServer(this.apolloServer, {
-            listen: { port: +process.env.GRAPHQL_PORT! }
-        });
-
-        // Use Apollo middleware with Express
-        this.app.use(
-            "/graphql",
-            graphqlUploadExpress({ maxFileSize: 1000000, maxFiles: 10 }), // 10MB limited
-            expressMiddleware(this.apolloServer, {
-                context: async ({ req, res }) => ({ req, res })
-            })
-        );
-        
-        console.log(`✅ Apollo Server running at ${url}graphql`);
+        this.app.use(`/graphql`, createHandler({
+            schema, 
+            context: async (req:any, res) => {
+                const authorization = req.headers['authorization']?.split(" ")[1];
+                return { req, res, token: authorization };
+            }
+        }));
     }
 
     private setupServer() {
