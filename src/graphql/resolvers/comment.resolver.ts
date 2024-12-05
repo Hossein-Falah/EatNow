@@ -1,4 +1,4 @@
-import { GraphQLList, GraphQLString, responsePathAsArray } from "graphql";
+import { GraphQLList, GraphQLString } from "graphql";
 import createHttpError from "http-errors";
 
 import { ResponseType } from "../types/response.types";
@@ -10,8 +10,6 @@ import { Comment } from "../../modules/comment/comment.model";
 import { IFood } from "../../modules/food/food.interface";
 import { CommentType } from "../types/comment.types";
 import { adminGuardUseGraphQL } from "../../middlewares/guard/admin.guard";
-import { resolve } from "path";
-import { error } from "console";
 
 const createComment = {
     type: ResponseType,
@@ -197,6 +195,43 @@ const rejectComment = {
     }
 }
 
+const answerComment = {
+    type: ResponseType,
+    args: {
+        id: { type: GraphQLString },
+        answer: { type: GraphQLString }
+    },
+    resolve: async (_:{}, { id, answer }: { id: string, answer: string }, context:IGraphQLContext) => {
+        try {
+            const user = await adminGuardUseGraphQL(context.token);
+
+            const comment = await checkExistComment(id);
+
+            if (comment.status !== "APPROVED") throw createHttpError.BadRequest("فقط به کامنت های تایید شده می توان پاسخ دهید");
+
+            if (user && user.id && comment) {
+                const createNewAnswer = await Comment.create({
+                    foodId: comment.foodId,
+                    authorId: user.id,
+                    content: answer,
+                    parentId: id,
+                    status: "APPROVED",
+                    like: 0,
+                    dislike: 0
+                })
+
+                if (!createNewAnswer) throw createHttpError.InternalServerError("خطایی در ایجاد پاسخ کامنت رخ داده");
+
+                return { success: true, error: false, message: "پاسخ کامنت با موفقعیت ایجاد شد" }
+            }
+        } catch(error) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const checkExistFood = async (id:string): Promise<IFood> => {
     const food = await Food.findByPk(id);
     if (!food) throw createHttpError.NotFound("غذای مورد نظر پیدا نشد");
@@ -216,5 +251,6 @@ export {
     getCommentById,
     removeCommentById,
     acceptComment,
-    rejectComment
+    rejectComment,
+    answerComment
 }

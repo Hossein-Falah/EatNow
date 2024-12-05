@@ -1,6 +1,6 @@
 import { GraphQLObjectType } from "graphql";
 import { getAllCategories, getCategoryById, removeCategoryById } from "./resolvers/category.resolver";
-import { acceptComment, createComment, getAllComment, getAllCommentsForAdmin, getCommentById, rejectComment, removeCommentById } from "./resolvers/comment.resolver";
+import { acceptComment, answerComment, createComment, getAllComment, getAllCommentsForAdmin, getCommentById, rejectComment, removeCommentById } from "./resolvers/comment.resolver";
 
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
@@ -20,7 +20,8 @@ const RootMutation = new GraphQLObjectType({
         createComment,
         removeCommentById,
         acceptComment,
-        rejectComment
+        rejectComment,
+        answerComment
     }
 });
 
