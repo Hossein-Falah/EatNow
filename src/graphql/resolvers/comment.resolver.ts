@@ -10,6 +10,8 @@ import { Comment } from "../../modules/comment/comment.model";
 import { IFood } from "../../modules/food/food.interface";
 import { CommentType } from "../types/comment.types";
 import { adminGuardUseGraphQL } from "../../middlewares/guard/admin.guard";
+import { resolve } from "path";
+import { error } from "console";
 
 const createComment = {
     type: ResponseType,
@@ -121,6 +123,30 @@ const getCommentById = {
     }
 }
 
+const removeCommentById = {
+    type: ResponseType,
+    args: {
+        id: { type: GraphQLString }
+    },
+    resolve: async (_:{}, { id }: { id: string }, context:IGraphQLContext) => {
+        try {
+            await adminGuardUseGraphQL(context.token);
+
+            const comment = await Comment.findByPk(id);
+            if (!comment) throw createHttpError.NotFound("کامنت مورد نظر پیدا نشد");
+
+            if (comment) {
+                await comment.destroy();
+                return { success: true, error: false, message: "کامنت با موفقعیت حذف شد" };
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const checkExistFood = async (id:string): Promise<IFood> => {
     const food = await Food.findByPk(id);
     if (!food) throw createHttpError.NotFound("غذای مورد نظر پیدا نشد");
@@ -137,5 +163,6 @@ export {
     createComment,
     getAllCommentsForAdmin,
     getAllComment,
-    getCommentById
+    getCommentById,
+    removeCommentById
 }
