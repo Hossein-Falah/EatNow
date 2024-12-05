@@ -1,4 +1,4 @@
-import { GraphQLList, GraphQLString } from "graphql";
+import { GraphQLList, GraphQLString, responsePathAsArray } from "graphql";
 import createHttpError from "http-errors";
 
 import { ResponseType } from "../types/response.types";
@@ -172,6 +172,31 @@ const acceptComment = {
     }
 }
 
+const rejectComment = {
+    type: ResponseType,
+    args: {
+        id: { type: GraphQLString }
+    },
+    resolve: async (_:{}, { id }: { id: string }, context:IGraphQLContext) => {
+        try {
+            await adminGuardUseGraphQL(context.token);
+
+            const comment = await checkExistComment(id);
+
+            if (comment) {
+                const updateComment = await Comment.update({ status: "REJECTED" }, { where: { id } });
+                if (!updateComment[0]) throw createHttpError.InternalServerError("خطایی در رد کامنت رخ داده");
+
+                return { success: true, error: false, message: "کامنت با موفقعیت رد شد" };
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const checkExistFood = async (id:string): Promise<IFood> => {
     const food = await Food.findByPk(id);
     if (!food) throw createHttpError.NotFound("غذای مورد نظر پیدا نشد");
@@ -190,5 +215,6 @@ export {
     getAllComment,
     getCommentById,
     removeCommentById,
-    acceptComment
+    acceptComment,
+    rejectComment
 }
