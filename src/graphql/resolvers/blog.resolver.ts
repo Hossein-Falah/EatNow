@@ -74,6 +74,27 @@ const getAllBlogsForAdmin = {
     }
 }
 
+const getAllBlogs = {
+    type: new GraphQLList(BlogType),
+    resolve: async (_:{}, args:{}, context:IGraphQLContext) => {
+        try {
+            const blogs = await Blog.findAll({
+                where: { status: "PUBLISHED" },
+                include: [
+                    { model: User, as: "author", attributes: ["id", "firstname", "lastname"] },
+                    { model: Category, as: "category", attributes: ["id", "title"] }
+                ]
+            })
+
+            return blogs;
+        } catch (error:unknown) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+};
+
 const checkExistWithTitle = async (title: string): Promise<IBlog | null> => {
     const blog: IBlog | null = await Blog.findOne({ where: { title }});
     if (blog) throw createHttpError.Conflict("بلاگ با این نام قبلا ثبت شده است");
@@ -87,5 +108,6 @@ const checkExistWithSlug = async (slug: string) => {
 
 export {
     createBlog,
-    getAllBlogsForAdmin
+    getAllBlogsForAdmin,
+    getAllBlogs
 }
