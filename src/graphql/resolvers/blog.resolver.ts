@@ -1,11 +1,15 @@
-import { GraphQLString } from "graphql";
+import createHttpError from "http-errors";
+import { GraphQLList, GraphQLString } from "graphql";
+
 import { IGraphQLContext } from "../graphql.context";
 import { ResponseType } from "../types/response.types";
 import { IBlog } from "../../modules/blog/blog.interface";
 import { blogValidation } from "../../modules/blog/blog.validation";
 import { adminGuardUseGraphQL } from "../../middlewares/guard/admin.guard";
 import { Blog } from "../../modules/blog/blog.model";
-import createHttpError from "http-errors";
+import { BlogType } from "../types/blog.types";
+import { Category } from "../../modules/category/category.model";
+import { User } from "../../modules/user/user.model";
 
 const createBlog = {
     type: ResponseType,
@@ -48,6 +52,28 @@ const createBlog = {
     }
 };
 
+const getAllBlogsForAdmin = {
+    type: new GraphQLList(BlogType),
+    resolve: async (_:{}, args:{}, context:IGraphQLContext) => {
+        try {
+            await adminGuardUseGraphQL(context.token);
+
+            const blogs = await Blog.findAll({ 
+                include: [
+                    { model: User, as: "author", attributes: ["id", "firstname", "lastname", "email", "phone", "address"] },
+                    { model: Category, as: "category", attributes: ["id", "title"] }
+                ]
+            });
+
+            return blogs;
+        } catch (error:unknown) {            
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const checkExistWithTitle = async (title: string): Promise<IBlog | null> => {
     const blog: IBlog | null = await Blog.findOne({ where: { title }});
     if (blog) throw createHttpError.Conflict("بلاگ با این نام قبلا ثبت شده است");
@@ -60,5 +86,6 @@ const checkExistWithSlug = async (slug: string) => {
 }
 
 export {
-    createBlog
+    createBlog,
+    getAllBlogsForAdmin
 }

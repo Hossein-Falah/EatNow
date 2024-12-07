@@ -1,6 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../../config/db.config";
 import { IBlog } from "./blog.interface";
+import { User } from "../user/user.model";
+import { Category } from "../category/category.model";
+import { Comment } from "../comment/comment.model";
 
 export class Blog extends Model<IBlog> implements IBlog {
     declare id?: string;
@@ -71,3 +74,12 @@ Blog.init({
     tableName: "blogs",
     timestamps: true
 });
+
+Blog.belongsTo(User, { foreignKey: "authorId", as: "author" });
+User.hasMany(Blog, { foreignKey: "authorId", as: "blogs" });
+
+Blog.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
+Category.hasMany(Blog, { foreignKey: "categoryId", as: "blogs" });
+
+Blog.hasMany(Comment, { foreignKey: "blogId", as: "comments" });
+Comment.belongsTo(Blog, { foreignKey: "blogId", as: "blog" });
