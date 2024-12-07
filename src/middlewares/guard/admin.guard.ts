@@ -46,7 +46,7 @@ export const AdminGuard = async (req:Request, res:Response, next:NextFunction) =
     }
 }
 
-export const adminGuardUseGraphQL = async (token: string | undefined) => {
+export const adminGuardUseGraphQL = async (token: string | undefined): Promise<IUser | null> => {
     if (!token) {
         throw createHttpError.Unauthorized("توکن دریافت نشد لطفا مجددا وارد شوید");
     }
