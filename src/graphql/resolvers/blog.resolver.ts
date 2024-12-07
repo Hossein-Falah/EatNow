@@ -74,6 +74,31 @@ const getAllBlogsForAdmin = {
     }
 }
 
+const getBlogById = {
+    type: BlogType,
+    args: {
+        id: { type: GraphQLString }
+    },
+    resolve: async (_:{}, { id }: IBlog, context:IGraphQLContext) => {
+        try {
+            const blog = await Blog.findByPk(id, {
+                include: [
+                    { model: User, as: "author", attributes: ["id", "firstname", "lastname", "email", "phone", "address"] },
+                    { model: Category, as: "category", attributes: ["id", "title"] }
+                ]
+            })
+
+            if (!blog) throw createHttpError.NotFound("بلاگ مورد نظر یافت نشد");
+
+            return blog;
+        } catch (error) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const getAllBlogs = {
     type: new GraphQLList(BlogType),
     resolve: async (_:{}, args:{}, context:IGraphQLContext) => {
@@ -103,7 +128,7 @@ const removeBlogById = {
     resolve: async (_:{}, { id }: IBlog, context:IGraphQLContext) => {
         try {
             await adminGuardUseGraphQL(context.token);
-            
+
             const blog = await Blog.findByPk(id);
             if (!blog) throw createHttpError.NotFound("بلاگ مورد نظر پیدا نشد");
 
@@ -134,5 +159,6 @@ export {
     createBlog,
     getAllBlogsForAdmin,
     getAllBlogs,
+    getBlogById,
     removeBlogById
 }
