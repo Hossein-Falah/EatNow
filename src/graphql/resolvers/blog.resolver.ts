@@ -95,6 +95,30 @@ const getAllBlogs = {
     }
 };
 
+const removeBlogById = {
+    type: ResponseType,
+    args: {
+        id: { type: GraphQLString }
+    },
+    resolve: async (_:{}, { id }: IBlog, context:IGraphQLContext) => {
+        try {
+            await adminGuardUseGraphQL(context.token);
+            
+            const blog = await Blog.findByPk(id);
+            if (!blog) throw createHttpError.NotFound("بلاگ مورد نظر پیدا نشد");
+
+            if (blog) {
+                await blog.destroy();
+                return { success: true, error: false, message: "بلاگ با موفقعیت حذف شد" };
+            }
+        } catch (error:unknown) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    } 
+}
+
 const checkExistWithTitle = async (title: string): Promise<IBlog | null> => {
     const blog: IBlog | null = await Blog.findOne({ where: { title }});
     if (blog) throw createHttpError.Conflict("بلاگ با این نام قبلا ثبت شده است");
@@ -109,5 +133,6 @@ const checkExistWithSlug = async (slug: string) => {
 export {
     createBlog,
     getAllBlogsForAdmin,
-    getAllBlogs
+    getAllBlogs,
+    removeBlogById
 }
