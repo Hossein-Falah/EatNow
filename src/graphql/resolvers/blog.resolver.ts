@@ -10,6 +10,7 @@ import { Blog } from "../../modules/blog/blog.model";
 import { BlogType } from "../types/blog.types";
 import { Category } from "../../modules/category/category.model";
 import { User } from "../../modules/user/user.model";
+import { deleteInvalidPropertyObject } from "../../utils/function.utils";
 
 const createBlog = {
     type: ResponseType,
@@ -144,6 +145,42 @@ const removeBlogById = {
     } 
 }
 
+const updateBlog = {
+    type: ResponseType,
+    args: {
+        id: { type: GraphQLString },
+        title: { type: GraphQLString },
+        description: { type: GraphQLString },
+        content: { type: GraphQLString },
+        slug: { type: GraphQLString },
+        coverImage: { type: GraphQLString },
+        categoryId: { type: GraphQLString },
+        status: { type: GraphQLString }
+    },
+    resolve: async (_:{}, args:IBlog, context:IGraphQLContext) => {
+        try {
+            const { id, categoryId } = args; 
+            await adminGuardUseGraphQL(context.token);
+
+            await checkExistBlog(id as string);
+
+            const existCategory = await Category.findByPk(categoryId);
+            if (!existCategory) throw createHttpError.NotFound("دسته بندی مورد نظر پیدا نشد");
+
+            deleteInvalidPropertyObject(args, ["authorId", "categoryId"]);
+
+            const updateBlogResult = await Blog.update(args, { where: { id }});
+            if (!updateBlogResult[0]) throw createHttpError.InternalServerError("خطایی در بروزرسانی بلاگ رخ داده است");
+
+            return { success: true, error: false, message: "بلاگ با موفقعیت بروزرسانی شد" };
+        } catch(error:unknown) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const checkExistWithTitle = async (title: string): Promise<IBlog | null> => {
     const blog: IBlog | null = await Blog.findOne({ where: { title }});
     if (blog) throw createHttpError.Conflict("بلاگ با این نام قبلا ثبت شده است");
@@ -153,6 +190,12 @@ const checkExistWithTitle = async (title: string): Promise<IBlog | null> => {
 const checkExistWithSlug = async (slug: string) => {
     const blog: IBlog | null = await Blog.findOne({ where: { slug }});
     if (blog) throw createHttpError.Conflict("بلاگ با این نام قبلا ثبت شده است");
+};
+
+const checkExistBlog = async (id: string) => {
+    const blog: IBlog | null = await Blog.findByPk(id);
+    if (!blog) throw createHttpError.NotFound("بلاگ مورد نظر پیدا نشد");
+    return blog;
 }
 
 export {
@@ -160,5 +203,6 @@ export {
     getAllBlogsForAdmin,
     getAllBlogs,
     getBlogById,
-    removeBlogById
+    removeBlogById,
+    updateBlog
 }
