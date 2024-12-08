@@ -2,6 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import sequelize from "../../config/db.config";
 import { IFood } from "./food.interface";
 import { User } from "../user/user.model";
+import { Discount } from "../discount/discount.model";
 
 export class Food extends Model<IFood> implements IFood {
     declare id: string;
@@ -17,6 +18,7 @@ export class Food extends Model<IFood> implements IFood {
     declare readyTime: number;
     declare author: string;
     declare isStock: boolean;
+    declare discountId: string;
 };
 
 Food.init({
@@ -110,6 +112,14 @@ Food.init({
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true
+    },
+    discountId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+            model: Discount,
+            key: "id"
+        }
     }
 },{
     sequelize: sequelize,
@@ -119,3 +129,6 @@ Food.init({
 
 Food.belongsTo(User, { foreignKey: "author", as: "user" });
 User.hasMany(Food, { foreignKey: "author", as: "foods" });
+
+Discount.hasMany(Food, { foreignKey: 'discountId' });
+Food.belongsTo(Discount, { foreignKey: 'discountId' });

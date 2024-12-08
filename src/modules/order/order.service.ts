@@ -135,7 +135,7 @@ export class OrderService {
         return { ...order.toJSON(), items: populatedItems };
     }
 
-    async createOrder({ userId, items, address }: IOrder): Promise<{ order: IOrder}> {
+    async createOrder({ userId, items, address, discountId }: IOrder): Promise<{ order: IOrder}> {
         let totalPrice = 0;
 
         for (const item of items) {
@@ -153,7 +153,8 @@ export class OrderService {
             items,
             totalPrice,
             status: "PENDING",
-            address
+            address,
+            discountId
         });
 
         if (!order) throw createHttpError.InternalServerError("سفارش ایجاد نشد");

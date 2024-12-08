@@ -3,6 +3,7 @@ import sequelize from "../../config/db.config";
 import { User } from "../user/user.model";
 import { IOrder } from "./order.interface";
 import { Food } from "../food/food.model";
+import { Discount } from "../discount/discount.model";
 
 export class Order extends Model<IOrder> implements IOrder {
     declare id: string;
@@ -14,6 +15,7 @@ export class Order extends Model<IOrder> implements IOrder {
     declare totalPrice: number;
     declare status: "PENDING" | "PREPARING" | "DELIVERED" | "CANCELED";
     declare address: string;
+    declare discountId: string;
 }
 
 Order.init({
@@ -50,6 +52,14 @@ Order.init({
     address: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    discountId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+            model: Discount,
+            key: "id"
+        }
     }
 }, {
     sequelize: sequelize,
@@ -62,3 +72,6 @@ Order.belongsTo(User, { foreignKey: "userId", as: "user" });
 
 Order.hasMany(Food, { foreignKey: "orderId", as: "foods" });
 Food.belongsTo(Order, { foreignKey: "orderId", as: "orders" });
+
+Discount.hasMany(Order, { foreignKey: "discountId", as: "orders" });
+Order.belongsTo(Discount, { foreignKey: "discountId", as: "discount" });

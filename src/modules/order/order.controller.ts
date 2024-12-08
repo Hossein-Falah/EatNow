@@ -93,11 +93,11 @@ class OrderController {
         try {
             const user = (req as CustomRequest).user;
 
-            const { items, address, status } = req.body;
+            const { items, address, status, discountId } = req.body;
 
             await createOrderValidation.validateAsync({ userId: user?.id, items, address });
 
-            const { order } = await this.service.createOrder({ userId: user?.id as string, items, address, status });
+            const { order } = await this.service.createOrder({ userId: user?.id as string, items, address, status, discountId });
 
             res.status(StatusCodes.CREATED).json({
                 statusCode: StatusCodes.CREATED,

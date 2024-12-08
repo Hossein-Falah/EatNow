@@ -43,7 +43,7 @@ export class FoodService {
         return food;
     }
     
-    async createFood({ title, description, content, category, price, slug, images, rating, readyTime, quantity, isStock, author }: IFood): Promise<void> {
+    async createFood({ title, description, content, category, price, slug, images, rating, readyTime, quantity, isStock, author, discountId }: IFood): Promise<void> {
         await this.checkExistWithTitle(title);
         await this.checkExistWithSlug(slug);
         
@@ -53,7 +53,7 @@ export class FoodService {
             price, images, slug,
             rating, readyTime, 
             quantity, 
-            author, isStock
+            author, isStock, discountId
         });
 
         if (!createFoodResult) throw createHttpError.InternalServerError("مشکلی در ساخت غذا رخ داد");
@@ -62,7 +62,7 @@ export class FoodService {
     async updateFood({ 
         id, title, description, content, 
         category, price, slug, quantity, 
-        images, rating, readyTime, isStock, author
+        images, rating, readyTime, isStock, author, discountId
     }: { id: string } & IFood): Promise<void> {
         const food = await this.checkExistFood(id);
 
@@ -78,14 +78,14 @@ export class FoodService {
             title, description, content, 
             category, price, slug, quantity, 
             images, rating, readyTime, 
-            author 
+            author, discountId
         }, ['author', 'user']);
 
         const updateFoodResult = await this.model.update({
             title, description, content, 
             category, price, slug, quantity, 
             images, rating, readyTime, 
-            isStock, author
+            isStock, author, discountId
         }, {
             where: { id: food.id }
         });
