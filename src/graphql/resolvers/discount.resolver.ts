@@ -1,11 +1,28 @@
 import createHttpError from "http-errors";
-import { GraphQLBoolean, GraphQLInt, GraphQLString } from "graphql";
+import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLString } from "graphql";
 import { IGraphQLContext } from "../graphql.context";
 import { ResponseType } from "../types/response.types";
 import { adminGuardUseGraphQL } from "../../middlewares/guard/admin.guard";
 import { discountValidation } from "../../modules/discount/discount.validation";
 import { IDiscount } from "../../modules/discount/discount.interface";
 import { Discount } from "../../modules/discount/discount.model";
+import { DiscountType } from "../types/discount.types";
+
+const getAllDiscounts = {
+    type: new GraphQLList(DiscountType),
+    resolve: async (_:{}, args:{}, context:IGraphQLContext) => {
+        try {
+            await adminGuardUseGraphQL(context.token);
+
+            const discounts = await Discount.findAll();            
+            return discounts;
+        } catch (error:unknown) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
 
 const createDiscount = {
     type: ResponseType,
@@ -24,8 +41,10 @@ const createDiscount = {
 
             await discountValidation.validateAsync({ title, description, code, value, endDate, usageLimit });
 
+            await checkExistDiscountWithTitle(title)
+
             const existingDiscount = await Discount.findOne({ where: { code }});
-            if (existingDiscount) throw createHttpError.Conflict("کد تخیفیف قبلا استفاده شده");
+            if (existingDiscount) throw createHttpError.Conflict("کد تخفیف قبلا استفاده شده");
 
             const newDiscount = await Discount.create({
                 title, description, code,
@@ -67,7 +86,14 @@ const deleteDiscount = {
     }
 }
 
+const checkExistDiscountWithTitle = async (title:string): Promise<IDiscount | null> => {
+    const discount = await Discount.findOne({ where: { title }});
+    if (discount) throw createHttpError.Conflict("کد تخفیفی قبلا با این نام ثبت شده");
+    return discount;
+}
+
 export {
+    getAllDiscounts,
     createDiscount,
     deleteDiscount
 }
