@@ -45,6 +45,29 @@ const createDiscount = {
     }
 };
 
+const deleteDiscount = {
+    type: ResponseType,
+    args: {
+        id: { type: GraphQLString }
+    },
+    resolve: async (_:{}, { id }:IDiscount, context:IGraphQLContext) => {
+        try {
+            await adminGuardUseGraphQL(context.token);
+
+            const discount = await Discount.findByPk(id);
+            if (!discount) throw createHttpError.NotFound("کد تخفیف مورد نظر پیدا نشد");
+
+            await discount.destroy();
+            return { success: true, error: false, message: "کد تخفیف با موفقعیت حذف شد" };
+        } catch (error:unknown) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 export {
-    createDiscount
+    createDiscount,
+    deleteDiscount
 }
