@@ -64,6 +64,31 @@ const createDiscount = {
     }
 };
 
+const changeDiscountStatus = {
+    type: ResponseType,
+    args: {
+        id: { type: GraphQLString },
+        isActive: { type: GraphQLBoolean }
+    },
+    resolve: async (_:{}, { id, isActive }:IDiscount, context:IGraphQLContext) => {
+        try {
+            await adminGuardUseGraphQL(context.token);
+
+            const discount = await Discount.findByPk(id);
+            if (!discount) throw createHttpError.NotFound("کد تخفیف مورد نظر پیدا نشد");
+
+            const updateDiscount = await Discount.update({ isActive }, { where: { id } });
+            if (!updateDiscount[0]) throw createHttpError.InternalServerError("خطایی در تغییر وضعیت کد تخفیف رخ داده لطفا دوباره تلاش کنید");
+
+            return { success: true, error: false, message: "وضعیت کد تخفیف با موفقعیت تغییر کرد" };
+        } catch (error:unknown) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const updateDiscount = {
     type: ResponseType,
     args: {
@@ -124,5 +149,6 @@ export {
     getAllDiscounts,
     createDiscount,
     deleteDiscount,
-    updateDiscount
+    updateDiscount,
+    changeDiscountStatus
 }
