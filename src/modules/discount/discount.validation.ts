@@ -10,6 +10,12 @@ const discountValidation = Joi.object({
     usageLimit: Joi.number().required().error(createHttpError.BadRequest("حداکثر محدوده وارد شده صحیح نمی باشد"))
 });
 
+const updateDiscountValidation = Joi.object({
+    code: Joi.string().optional().allow().error(createHttpError.BadRequest("کد تخفیف وارد شده صحیح نیست")),
+    value: Joi.number().optional().allow().error(createHttpError.BadRequest("مقدار وارد شده صحیح نمی باشد"))
+})
+
 export {
-    discountValidation
+    discountValidation,
+    updateDiscountValidation
 }

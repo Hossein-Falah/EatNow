@@ -3,7 +3,7 @@ import { GraphQLBoolean, GraphQLInt, GraphQLList, GraphQLString } from "graphql"
 import { IGraphQLContext } from "../graphql.context";
 import { ResponseType } from "../types/response.types";
 import { adminGuardUseGraphQL } from "../../middlewares/guard/admin.guard";
-import { discountValidation } from "../../modules/discount/discount.validation";
+import { discountValidation, updateDiscountValidation } from "../../modules/discount/discount.validation";
 import { IDiscount } from "../../modules/discount/discount.interface";
 import { Discount } from "../../modules/discount/discount.model";
 import { DiscountType } from "../types/discount.types";
@@ -64,6 +64,34 @@ const createDiscount = {
     }
 };
 
+const updateDiscount = {
+    type: ResponseType,
+    args: {
+        id: { type: GraphQLString },
+        code: { type: GraphQLString },
+        value: { type: GraphQLInt }
+    },
+    resolve: async (_:{}, { id, code, value }:IDiscount, context:IGraphQLContext) => {
+        try {
+            await adminGuardUseGraphQL(context.token);
+
+            await updateDiscountValidation.validateAsync({ code, value });
+
+            const discount = await Discount.findByPk(id);
+            if (!discount) throw createHttpError.NotFound("کد تخفیف مورد نظر پیدا نشد");
+
+            const updateDiscount = await Discount.update({ code, value }, { where: { id } });
+            if (!updateDiscount[0]) throw createHttpError.InternalServerError("خطایی در ویرایش کد تخفیف رخ داده لطفا دوباره تلاش کنید");
+
+            return { success: true, error: false, message: "کد تخفیف با موفقعیت ویرایش شد" };
+        } catch (error:unknown) {
+            if (error instanceof Error) {
+                return { success: false, error: true, message: error.message };
+            }
+        }
+    }
+}
+
 const deleteDiscount = {
     type: ResponseType,
     args: {
@@ -95,5 +123,6 @@ const checkExistDiscountWithTitle = async (title:string): Promise<IDiscount | nu
 export {
     getAllDiscounts,
     createDiscount,
-    deleteDiscount
+    deleteDiscount,
+    updateDiscount
 }
