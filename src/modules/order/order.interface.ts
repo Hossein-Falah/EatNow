@@ -10,6 +10,7 @@ export interface IOrder {
     totalPrice?: number;
     status: "PENDING" | "PREPARING" | "DELIVERED" | "CANCELED";
     address: string;
+    discountId: string;
 }
 
 export interface IOrderItem {

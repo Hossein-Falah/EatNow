@@ -58,7 +58,7 @@ class FoodController {
     async createFood(req:Request<{}, {}, IFood>, res:Response, next:NextFunction) {
         try {
             const user = (req as CustomRequest).user;
-            const { title, description, content, category, price, slug, rating, readyTime, quantity } = req.body;
+            const { title, description, content, category, price, slug, rating, readyTime, quantity, discountId } = req.body;
             const images = getListOfImages((req as CustomFile).files, "foods")
             
             await FoodValidation.validateAsync({ title, description, content, category, price, slug, rating, readyTime, quantity });
@@ -70,7 +70,8 @@ class FoodController {
                 rating, readyTime, 
                 quantity, 
                 author: user?.id ?? '', 
-                isStock: quantity > 0 ? true : false
+                isStock: quantity > 0 ? true : false,
+                discountId
             });
 
             res.status(StatusCodes.CREATED).json({
@@ -89,7 +90,7 @@ class FoodController {
             const user = (req as CustomRequest).user;
            
             const { id } = req.params;
-            const { title, description, content, category, price, slug, quantity, rating, readyTime } = req.body;
+            const { title, description, content, category, price, slug, quantity, rating, readyTime, discountId } = req.body;
 
             await updateFoodValidation.validateAsync(req.body);
 
@@ -100,7 +101,8 @@ class FoodController {
                 category, price, slug, quantity, 
                 images, rating, readyTime, 
                 isStock: quantity > 0 ? true : false,
-                author: user?.id ?? ''
+                author: user?.id ?? '',
+                discountId
             });
 
             res.status(StatusCodes.OK).json({

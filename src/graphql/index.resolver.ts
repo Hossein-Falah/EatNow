@@ -2,6 +2,7 @@ import { GraphQLObjectType } from "graphql";
 import { getAllCategories, getCategoryById, removeCategoryById } from "./resolvers/category.resolver";
 import { acceptComment, answerComment, createComment, getAllComment, getAllCommentsForAdmin, getCommentById, rejectComment, removeCommentById } from "./resolvers/comment.resolver";
 import { createBlog, getAllBlogs, getAllBlogsForAdmin, getBlogById, removeBlogById, updateBlog } from "./resolvers/blog.resolver";
+import { changeDiscountStatus, createDiscount, deleteDiscount, getAllDiscounts, updateDiscount } from "./resolvers/discount.resolver";
 
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
@@ -13,7 +14,8 @@ const RootQuery = new GraphQLObjectType({
         getCommentById,
         getAllBlogsForAdmin,
         getAllBlogs,
-        getBlogById
+        getBlogById,
+        getAllDiscounts
     }
 })
 
@@ -28,7 +30,11 @@ const RootMutation = new GraphQLObjectType({
         answerComment,
         createBlog,
         removeBlogById,
-        updateBlog
+        updateBlog,
+        createDiscount,
+        deleteDiscount,
+        updateDiscount,
+        changeDiscountStatus
     }
 });
 

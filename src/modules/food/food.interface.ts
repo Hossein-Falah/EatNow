@@ -12,4 +12,5 @@ export interface IFood {
     readyTime: number;
     author: string;
     isStock: boolean;
+    discountId: string;
 }
