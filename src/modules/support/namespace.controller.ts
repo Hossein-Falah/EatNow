@@ -11,6 +11,7 @@ class NameSpaceController {
         this.service = nameSpaceService;
 
         this.createNamespace = this.createNamespace.bind(this);
+        this.getNamespaces = this.getNamespaces.bind(this);
     }
 
     async createNamespace(req:Request<{}, {}, ISupport>, res:Response, next:NextFunction) {
@@ -29,9 +30,14 @@ class NameSpaceController {
         }            
     }
 
-    getNamespaces(req:Request, res:Response, next:NextFunction) {
+    async getNamespaces(req:Request, res:Response, next:NextFunction) {
         try {
-            
+            const namespaces = await this.service.getNamespaces();
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                namespaces
+            })
         } catch (error) {
             next(error);
         }        

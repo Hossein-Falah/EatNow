@@ -15,8 +15,9 @@ export class NameSpaceService {
         await this.model.create({ title, endpoint });
     }
 
-    getNamespaces() {
-
+    async getNamespaces(): Promise<ISupport[]> {
+        const namespaces = await this.model.findAll();
+        return namespaces;
     }
 
     async checkExistWithEndpoint(endpoint:string):Promise<void> {
