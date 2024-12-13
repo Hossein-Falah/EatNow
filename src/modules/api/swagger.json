@@ -34,6 +34,10 @@
         {
             "name": "Category 🏷️",
             "description": "api category route"
+        },
+        {
+            "name": "Support 💬",
+            "description": "mangement support route"
         }
     ],
     "paths": {
@@ -1086,6 +1090,63 @@
                 "responses": {
                     "201": {
                         "description": "create category successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/support/namespace/create": {
+            "post": {
+                "tags": [
+                    "Support 💬"
+                ],
+                "summary": "create namespace",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "پشتیبانی"
+                                    },
+                                    "endpoint": {
+                                        "type": "string",
+                                        "example": "/support"
+                                    }
+                                },
+                                "required": [
+                                    "title",
+                                    "endpoint"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "create namespace successFully"
                     },
                     "401": {
                         "description": "unauthorized"

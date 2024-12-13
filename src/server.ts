@@ -3,6 +3,7 @@ import http from "http";
 import { GraphQLSchema } from "graphql";
 import { createHandler } from "graphql-http/lib/use/express";
 import createHttpError from "http-errors";
+import { Server } from "socket.io";
 import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
@@ -58,6 +59,12 @@ export class Application {
 
     private setupServer() {
         const server = http.createServer(this.app);
+        const io = new Server(server, {
+            cors: {
+                origin: "http://localhost:8000",
+                methods: ["GET", "POST"]
+            }
+        })
 
         server.listen(this.PORT, () => {
             console.log(`✅ Server running on http://localhost:${this.PORT}/api-doc`);

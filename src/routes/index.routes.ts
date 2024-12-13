@@ -5,6 +5,7 @@ import { AdminGuard } from "../middlewares/guard/admin.guard";
 import foodRouter from "../modules/food/food.routes";
 import orderRouter from "../modules/order/order.routes";
 import categoryRouter from "../modules/category/category.routes";
+import supportRouter from "../modules/support/support.routes";
 
 const AllRoutes: Router = Router();
 
@@ -13,6 +14,7 @@ AllRoutes.use(`/users`, AdminGuard as RequestHandler, userRouter);
 AllRoutes.use(`/foods`, foodRouter);
 AllRoutes.use(`/orders`, orderRouter);
 AllRoutes.use(`/categories`, AdminGuard as RequestHandler, categoryRouter);
+AllRoutes.use(`/support`, supportRouter);
 
 export { 
     AllRoutes
