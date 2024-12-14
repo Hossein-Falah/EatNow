@@ -13,6 +13,7 @@ class RoomController {
 
         this.getAllRooms = this.getAllRooms.bind(this);
         this.createNewRoom = this.createNewRoom.bind(this);
+        this.removeRoomById = this.removeRoomById.bind(this);
     }
 
     async getAllRooms(req:Request, res:Response, next:NextFunction) {

@@ -12,6 +12,7 @@ class NameSpaceController {
 
         this.createNamespace = this.createNamespace.bind(this);
         this.getNamespaces = this.getNamespaces.bind(this);
+        this.removeNamespaceById = this.removeNamespaceById.bind(this);
     }
 
     async createNamespace(req:Request<{}, {}, ISupport>, res:Response, next:NextFunction) {
@@ -41,6 +42,21 @@ class NameSpaceController {
         } catch (error) {
             next(error);
         }        
+    }
+
+    async removeNamespaceById(req:Request<{id:string}, {}, {}>, res:Response, next:NextFunction) {
+        try {
+            const { id } = req.params;
+
+            await this.service.removeNamespaceById({ id });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "فضای گفتگو با موفقعیت حذف شد"
+            })
+        } catch (error) {
+            next(error);
+        }
     }
 }
 

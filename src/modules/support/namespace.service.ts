@@ -20,6 +20,16 @@ export class NameSpaceService {
         return namespaces;
     }
 
+    async removeNamespaceById({ id }: { id:string }):Promise<void> {
+        const namespace = await this.model.findByPk(id);
+
+        if (namespace) {
+            await namespace.destroy();
+        } else {
+            throw createHttpError.NotFound("فضای مورد نظر پیدا نشد");
+        }
+    }
+
     async checkExistWithEndpoint(endpoint:string):Promise<void> {
         const namespaces = await this.model.findOne({ where: { endpoint } });
         if (namespaces) throw createHttpError.Conflict("قبلا همچین فضایی با این نام ساخته شده");
