@@ -25,6 +25,16 @@ export class RoomService {
         if (!createRoom) throw createHttpError.InternalServerError("مشکلی در ساخت اتاق گفتگو پیش آمده");
     }
 
+    async removeRoomById({id}: {id:string}) {
+        const room = await this.model.findByPk(id);
+
+        if (room) {
+            await room.destroy();
+        } else {
+            throw createHttpError.NotFound("اتاق گفتگو مورد نظر پیدا نشد");
+        }
+    }
+
     async checkExistWithName(name:string):Promise<void> {
         const room = await this.model.findOne({ where: { name } });
         if (room) throw createHttpError.Conflict("اتاق گفتگو با این نام قبلا ثبت شده است");

@@ -1,9 +1,8 @@
+import { StatusCodes } from "http-status-codes";
 import { NextFunction, Request, Response } from "express";
 import { roomService, RoomService } from "./room.service";
-import { StatusCodes } from "http-status-codes";
 import { IRoom } from "./support.interface";
 import { roomValidation } from "./support.validation";
-import createHttpError from "http-errors";
 import { deleteImageFile, getImageUrl } from "../../utils/function.utils";
 
 class RoomController {
@@ -46,6 +45,21 @@ class RoomController {
         } catch (error) {
             const images = getImageUrl(req.file ?? null, "room", "/public");
             await deleteImageFile(images as string);
+            next(error);
+        }
+    }
+
+    async removeRoomById(req:Request<{ id:string }, {}, {}>, res:Response, next:NextFunction) {
+        try {
+            const { id } = req.params;
+
+            await this.service.removeRoomById({ id });
+
+            res.status(StatusCodes.OK).json({
+                statusCode: StatusCodes.OK,
+                message: "اتاق گفتگو با موفقعیت پاک شد"
+            })
+        } catch (error) {
             next(error);
         }
     }
