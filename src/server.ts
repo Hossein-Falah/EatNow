@@ -16,6 +16,7 @@ import { AllRoutes } from "./routes/index.routes";
 import { CustomError } from "./errors/customError";
 import { swaggerRoute } from "./modules/api/swagger.routes";
 import { RootMutation, RootQuery } from "./graphql/index.resolver";
+import SocketService from "./modules/socket/socket.service";
 
 export class Application {
     private app: express.Application
@@ -64,7 +65,9 @@ export class Application {
                 origin: "http://localhost:8000",
                 methods: ["GET", "POST"]
             }
-        })
+        });
+        const socketService = new SocketService(io);
+        socketService.initializeConnection();
 
         server.listen(this.PORT, () => {
             console.log(`✅ Server running on http://localhost:${this.PORT}/api-doc`);
