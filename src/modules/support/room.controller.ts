@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { roomService, RoomService } from "./room.service";
 import { StatusCodes } from "http-status-codes";
+import { IRoom } from "./support.interface";
+import { roomValidation } from "./support.validation";
+import createHttpError from "http-errors";
+import { deleteImageFile, getImageUrl } from "../../utils/function.utils";
 
 class RoomController {
     private service: RoomService;
@@ -9,6 +13,7 @@ class RoomController {
         this.service = roomService;
 
         this.getAllRooms = this.getAllRooms.bind(this);
+        this.createNewRoom = this.createNewRoom.bind(this);
     }
 
     async getAllRooms(req:Request, res:Response, next:NextFunction) {
@@ -20,6 +25,27 @@ class RoomController {
                 rooms
             })
         } catch (error) {
+            next(error);
+        }
+    }
+
+    async createNewRoom(req:Request<{}, {}, IRoom>, res:Response, next:NextFunction) {
+        try {
+            const { name, description, conversationId } = req.body;
+
+            const image = getImageUrl(req.file ?? null, 'room') as string;
+            
+            await roomValidation.validateAsync({ name, description, conversationId });
+
+            await this.service.createNewRoom({ name, description, conversationId, image });
+
+            res.status(StatusCodes.CREATED).json({
+                statusCode: StatusCodes.CREATED,
+                message: "اتاق گفتگو با موفقعیت ساخته شد"
+            })
+        } catch (error) {
+            const images = getImageUrl(req.file ?? null, "room", "/public");
+            await deleteImageFile(images as string);
             next(error);
         }
     }

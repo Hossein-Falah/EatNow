@@ -9,6 +9,7 @@ export interface IRoom {
     name: string;
     description: string;
     image: string;
+    conversationId?: string;
 }
 
 export interface ILocation {

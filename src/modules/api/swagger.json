@@ -1225,6 +1225,67 @@
                     }
                 }
             }
+        },
+        "/support/room/create": {
+            "post": {
+                "tags": [
+                    "Support 💬"
+                ],
+                "summary": "create new room",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "فنی"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "پشتیبانی فنی"
+                                    },
+                                    "conversationId": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "create room successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
         }
     }
 }

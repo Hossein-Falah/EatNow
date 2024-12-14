@@ -1,12 +1,14 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../../config/db.config";
 import { IRoom } from "./support.interface";
+import { Conversation } from "./conversation.model";
 
 export class Room extends Model<IRoom> implements IRoom {
     declare id: string;
     declare name: string;
     declare description: string;
     declare image: string;
+    declare conversationId?: string;
 }
 
 Room.init({
@@ -27,6 +29,15 @@ Room.init({
     image: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    conversationId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: Conversation,
+            key: "id"
+        },
+        onDelete: "CASCADE"
     }
 }, {
     sequelize: sequelize,
