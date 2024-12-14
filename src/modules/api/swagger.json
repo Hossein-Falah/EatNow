@@ -1195,6 +1195,36 @@
                     }
                 }
             }
+        },
+        "/support/rooms": {
+            "get": {
+                "tags": [
+                    "Support 💬"
+                ],
+                "summary": "get all rooms",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get all rooms successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
         }
     }
 }
