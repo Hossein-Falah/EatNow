@@ -34,6 +34,10 @@
         {
             "name": "Category 🏷️",
             "description": "api category route"
+        },
+        {
+            "name": "Support 💬",
+            "description": "mangement support route"
         }
     ],
     "paths": {
@@ -1098,6 +1102,262 @@
                     },
                     "400": {
                         "description": "bad request"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/support/namespace": {
+            "get": {
+                "tags": [
+                    "Support 💬"
+                ],
+                "summary": "get namespaces",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get namespaces successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/support/namespace/create": {
+            "post": {
+                "tags": [
+                    "Support 💬"
+                ],
+                "summary": "create namespace",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "پشتیبانی"
+                                    },
+                                    "endpoint": {
+                                        "type": "string",
+                                        "example": "/support"
+                                    }
+                                },
+                                "required": [
+                                    "title",
+                                    "endpoint"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "create namespace successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/support/namespace/{id}": {
+            "delete": {
+                "tags": [
+                    "Support 💬"
+                ],
+                "summary": "delete room",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete room successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/support/rooms": {
+            "get": {
+                "tags": [
+                    "Support 💬"
+                ],
+                "summary": "get all rooms",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "get all rooms successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/support/room/create": {
+            "post": {
+                "tags": [
+                    "Support 💬"
+                ],
+                "summary": "create new room",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "فنی"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "پشتیبانی فنی"
+                                    },
+                                    "conversationId": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "create room successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
+                    },
+                    "400": {
+                        "description": "bad request"
+                    },
+                    "500": {
+                        "description": "internal server error"
+                    }
+                }
+            }
+        },
+        "/support/room/{id}": {
+            "delete": {
+                "tags": [
+                    "Support 💬"
+                ],
+                "summary": "delete room",
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete room successFully"
+                    },
+                    "401": {
+                        "description": "unauthorized"
+                    },
+                    "403": {
+                        "description": "access denied"
+                    },
+                    "404": {
+                        "description": "user not found"
                     },
                     "500": {
                         "description": "internal server error"

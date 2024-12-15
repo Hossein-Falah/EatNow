@@ -3,6 +3,7 @@ import http from "http";
 import { GraphQLSchema } from "graphql";
 import { createHandler } from "graphql-http/lib/use/express";
 import createHttpError from "http-errors";
+import { Server } from "socket.io";
 import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
@@ -15,6 +16,7 @@ import { AllRoutes } from "./routes/index.routes";
 import { CustomError } from "./errors/customError";
 import { swaggerRoute } from "./modules/api/swagger.routes";
 import { RootMutation, RootQuery } from "./graphql/index.resolver";
+import SocketService from "./modules/socket/socket.service";
 
 export class Application {
     private app: express.Application
@@ -58,6 +60,14 @@ export class Application {
 
     private setupServer() {
         const server = http.createServer(this.app);
+        const io = new Server(server, {
+            cors: {
+                origin: "*",
+                methods: ["GET", "POST"]
+            }
+        });
+        const socketService = new SocketService(io);
+        socketService.initializeConnection();
 
         server.listen(this.PORT, () => {
             console.log(`✅ Server running on http://localhost:${this.PORT}/api-doc`);
