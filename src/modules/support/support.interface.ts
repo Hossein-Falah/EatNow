@@ -4,6 +4,13 @@ export interface ISupport {
     endpoint: string;
 }
 
+export interface IConversation {
+    id?: string;
+    title: string;
+    endpoint: string;
+    rooms?: IRoom[];
+}
+
 export interface IRoom {
     id?: string;
     name: string;

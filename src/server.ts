@@ -62,7 +62,7 @@ export class Application {
         const server = http.createServer(this.app);
         const io = new Server(server, {
             cors: {
-                origin: "http://localhost:8000",
+                origin: "*",
                 methods: ["GET", "POST"]
             }
         });
