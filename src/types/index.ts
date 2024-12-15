@@ -10,3 +10,10 @@ export type verifyOTPType = {
     phone: number;
     otp: number;
 }
+
+export type MessageData = {
+    message: string;
+    roomName: string;
+    endpoint: string;
+    sender: string;
+};

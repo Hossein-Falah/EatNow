@@ -2,6 +2,8 @@ import { Server, Socket } from "socket.io";
 import { Conversation } from "../support/conversation.model";
 import { Room } from "../support/room.model";
 import { IConversation, IRoom } from "../support/support.interface";
+import { MessageData } from "../../types";
+import { Message } from "../support/message.model";
 
 class SocketService {
     private io:Server;
@@ -103,6 +105,44 @@ class SocketService {
             this.io.of(`/${endpoint}`).in(roomName || "").emit("countOfOnlineUsers", onlineUsers.size);
         } catch (error) {
             console.error("Error in updateOnlineUsersCount", error);
+        }
+    }
+
+    registerMessageHandlers(socket:Socket):void {
+        socket.on(`newMessage`, async (data:MessageData) => {
+            await this.handleNewMessage(data);
+        })
+    }
+
+    async handleNewMessage(data:MessageData):Promise<void> {
+        try {
+            const { message, endpoint, roomName, sender } = data;
+
+            const conversation: IConversation | null = await Conversation.findOne({
+                where: { endpoint },
+                include: [{model: Room, as: "rooms", where: { name: roomName }}]
+            });
+
+            if (!conversation || !conversation.rooms || conversation.rooms.length === 0) {
+                console.error("Room not found for the provided endpoint and room name.");
+                return
+            }
+
+            const room = conversation.rooms[0];
+
+            const newMessage = await Message.create({
+                senderId: sender,
+                message,
+                dateTime: new Date(),
+                roomId: room.id as string
+            });
+
+            this.io.of(`/${endpoint}`).in(roomName).emit("confirmMessage", {
+                ...data,
+                dateTime: newMessage.dateTime
+            })
+        } catch (error) {
+            console.error("Error in handleNewMessage", error);
         }
     }
 }

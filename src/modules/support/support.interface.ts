@@ -31,4 +31,5 @@ export interface IMessage {
     senderId: string;
     message: string;
     dateTime: Date;
+    roomId: string;
 }
