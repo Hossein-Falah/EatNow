@@ -58,6 +58,10 @@ class SocketService {
             socket.on(`joinRoom`, async (roomName:string) => {
                 await this.handleRoomJoin(namespace.endpoint, roomName, socket, conversation?.rooms ?? []);
             })
+
+            socket.on(`disconnect`, async () => {
+                await this.updateOnlineUsersCount(namespace.endpoint);
+            })
         } catch (error) {
             console.log("Error in handleNamespaceConnection", error);
             socket.emit("error", "Failed to connect to namespace");
@@ -83,12 +87,23 @@ class SocketService {
 
         if (lastRoom) {
             socket.leave(lastRoom);
+            await this.updateOnlineUsersCount(endpoint, lastRoom);
         }
 
         socket.join(roomName);
-
+        await this.updateOnlineUsersCount(endpoint, roomName);
+        
         const roomInfo = rooms.find(room => room.name === roomName);
         socket.emit("roomInfo", roomInfo);
+    }
+
+    async updateOnlineUsersCount(endpoint:string, roomName?:string):Promise<void> {
+        try {
+            const onlineUsers = await this.io.of(`/${endpoint}`).in(roomName || "").allSockets();
+            this.io.of(`/${endpoint}`).in(roomName || "").emit("countOfOnlineUsers", onlineUsers.size);
+        } catch (error) {
+            console.error("Error in updateOnlineUsersCount", error);
+        }
     }
 }
 
